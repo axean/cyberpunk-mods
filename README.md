@@ -24,6 +24,7 @@ Cyberpunk 2077 mods, and notes on how modding works. Long-term goal: questline m
 - `tools/snap.sh`: snapshot the game dir and Proton prefix, diff before/after installing a mod
 - `tools/verify_steam.py`: check the game dir against Steam's depot manifests (`~/.local/share/Steam/depotcache/`)
 - `tools/savdat.py`: decode a `sav.dat`: node tree, node dumps, facts by name, fact diffs between saves
+- `tools/assetrefs.py`: list which resources an unpacked mod references: vanilla, its own, or neither
 
 ## Setup
 
@@ -42,6 +43,8 @@ tools/snap.sh diff before after
 
 uv run tools/savdat.py facts <save>/sav.dat q101_done
 uv run tools/savdat.py factdiff <old>/sav.dat <new>/sav.dat [candidate fact names...]
+
+uv run tools/assetrefs.py <mod dir with raw/ and json/> <metadata-resources.csv> [-v]
 ```
 
 Snapshots (except `snapshots/vanilla`) and unpacked third-party mods stay local (`snapshots/`, `dissected/`).
