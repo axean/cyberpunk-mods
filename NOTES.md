@@ -30,6 +30,8 @@ The game dir (`steamapps/common/Cyberpunk 2077`) is not touched. Everything goes
 | `users/steamuser/AppData/Local/mod.io/5784/steamuser/user.json` | mod.io account |
 | `users/steamuser/Saved Games/CD Projekt Red/Cyberpunk 2077/EnabledMods.json` | Enabled mods list, plus `mods_config` (Boolean/Float/Int/Keybind/Combo, probably mod settings) |
 
+Uninstalling in-game deletes `mods/<modID>/` and drops the mod from `state.json`, `user.json` and `EnabledMods.json`. Thumbnails in `cache/` stay. `EnabledMods.json` is written in two steps, so wait a moment before checking.
+
 Layout of a mod folder:
 
 ```
