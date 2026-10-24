@@ -13,7 +13,7 @@ Cyberpunk 2077 mods, and notes on how modding works. Long-term goal: questline m
 > [!IMPORTANT]
 > **Disclaimer:** This is an unofficial fan work and is not approved/endorsed by CD PROJEKT RED.
 >
-> Made under the [CD PROJEKT RED Fan Content Guidelines](https://www.cdprojektred.com/en/fan-content) and [User Agreement](https://regulations.cdprojektred.com/en/user_agreement). This repo does not contain:
+> Made under the [CD PROJEKT RED Fan Content Guidelines](https://www.cdprojektred.com/en/fan-content) and [User Agreement](https://regulations.cdprojektred.com/en/user_agreement). This repo does **not** contain:
 >
 > - game files or assets extracted from the game
 > - CD PROJEKT RED's modding tools or documentation (REDmod)
