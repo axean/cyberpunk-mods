@@ -60,6 +60,9 @@ Decoded by `tools/savdat.py`, checked against the facts listed in `metadata.9.js
 - Fact values are signed 32-bit (`-1` is stored as `0xffffffff`).
 - Archive name prefixes like `#` and `z` are probably load order (alphabetical, last wins), as in the Nexus convention. Not verified for the mod.io loader.
 - ArchiveXL, TweakXL and redscript formats appear in mod.io mods. Not yet known if 2.5 supports them natively or bundles them.
+- Redscript runs on 2.5 via mod.io (PC, Proton). A mod's `.script` wraps an elevator method and sets facts; after an elevator ride those facts appeared in the save, and no quest or scene file writes them.
+- Data-only mods can do a lot through quest scenes: `questInputAction_ConditionType` reads stick and button input (e.g. "player is idle"), `questInventory_ConditionType` + `questAddRemoveItem` check and consume items, and scenes can play vanilla player animations with vanilla props attached.
+- mod.io tags some mods "Available on Consoles". Mods that ship scripts seem not to carry it; not confirmed.
 
 ## Open questions
 
