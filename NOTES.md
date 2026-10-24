@@ -32,6 +32,16 @@ r6/tweaks/*.yaml|*.json     TweakXL-style records
 r6/cache/*.redscripts(.h64) compiled scripts: final, final_noopts, master, profiling
 ```
 
+## Saves
+
+`drive_c/users/steamuser/Saved Games/CD Projekt Red/Cyberpunk 2077/<AutoSave-N|ManualSave-N>/`: `sav.dat` (compressed game state), `metadata.9.json`, `screenshot.png`.
+
+`metadata.9.json` → `Data.metadata` is readable JSON. Mod-related fields: `isModded`, `enabledModioInfo` (modID, modName, authorName per enabled mod.io mod). Also level, attributes, lifePath, `activeQuests`, `finishedQuests`, `trackedQuestEntry` (e.g. `ep1/quests/main_quest/q301_crash/00_hook/get_to_combat_zone`) and a short `facts` list. That list is a fixed set of story facts; facts set by mods only show up in `sav.dat`.
+
+Skip-to-Phantom-Liberty start: level 15, `q301_active=1`, `ep1_active=1`, Act 1 outcomes pre-set (`q110_voodoo_queen_dead=1`, `q110_08a_netwatch_deal=1`, ...).
+
+Installing or enabling mods writes nothing besides the files above; playing only adds saves, `user.gls` and the vkd3d shader cache in the game dir.
+
 ## Observations
 
 - Archive name prefixes like `#` and `z` are probably load order (alphabetical, last wins), as in the Nexus convention. Not verified for the mod.io loader.
