@@ -48,4 +48,19 @@ Not a fresh prefix. Before this snapshot the game had been run and the in-game m
 ## Files
 
 - `game.tsv`, `prefix.tsv`: path, size, mtime (`tools/snap.sh` format)
-- `game.sha256`: sha256 of every file in the game dir. Hashed at 2026-10-24T20:00Z after two mod.io installs; the game dir was unchanged by them (diffed), so these match vanilla.
+- `game.sha256`: sha256 of every file in the game dir, hashed 2026-10-24T20:00Z.
+
+## Verification
+
+- `tools/verify_steam.py` against Steam's cached depot manifests (`depotcache/1091501_3524634124112875626.manifest`, `2138330_5565496786254603194.manifest`): all 182 shipped files match CDPR's SHA-1, none missing.
+- `game.sha256` re-checked against the same files: all 186 OK.
+- `game.tsv` (taken before any mod install) matches a listing taken at hash time: same paths, sizes and mtimes.
+
+So the 182 shipped files in `game.sha256` are vanilla 2.5. The 4 other files are not shipped by Steam; they were written on first launch (2026-10-24 ~19:28Z), before this snapshot:
+
+| File | Size | What |
+|---|---|---|
+| `bin/x64/CrashInfo.json` | 0 | crash reporter |
+| `bin/x64/Cyberpunk2077.exe-<timestamp>.txt` | 31 | crash reporter |
+| `bin/x64/REDEngineErrorReporter.exe-<timestamp>.txt` | 31 | crash reporter |
+| `bin/x64/vkd3d-proton.cache.write` | 1038776 | vkd3d-proton shader cache, changes as you play |
