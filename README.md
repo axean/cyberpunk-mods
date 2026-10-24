@@ -2,7 +2,7 @@
 
 Cyberpunk 2077 mods, and notes on how modding works. Long-term goal: questline mods.
 
-- `NOTES.md`: findings from taking apart other mods
+- `NOTES.md`: findings on how modding works
 - `tools/snap.sh`: snapshot the game dir and Proton prefix, diff before/after installing a mod
 - `tools/verify_steam.py`: check the game dir against Steam's depot manifests (`~/.local/share/Steam/depotcache/`)
 
