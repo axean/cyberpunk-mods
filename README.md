@@ -2,6 +2,15 @@
 
 Cyberpunk 2077 mods, and notes on how modding works. Long-term goal: questline mods.
 
+> [!IMPORTANT]
+> This is an unofficial fan work and is not approved/endorsed by CD PROJEKT RED.
+>
+> Made under the [CD PROJEKT RED Fan Content Guidelines](https://www.cdprojektred.com/en/fan-content) and [User Agreement](https://regulations.cdprojektred.com/en/user_agreement). This repo does not contain:
+>
+> - game files or assets extracted from the game
+> - CD PROJEKT RED's modding tools or documentation (REDmod)
+> - files from other authors' mods
+
 - `NOTES.md`: findings on how modding works
 - `TOOLS.md`: index of modding tools (WolvenKit, ...) and the scripts in `tools/`
 - `tools/snap.sh`: snapshot the game dir and Proton prefix, diff before/after installing a mod
