@@ -41,4 +41,5 @@ uv run tools/assetrefs.py <mod dir with raw/ and json/> <metadata-resources.csv>
 
 Each script prints its full usage with `--help` or without arguments.
 
-Snapshots (except `snapshots/vanilla`), unpacked third-party mods and diagrams rendered from them stay local (`snapshots/`, `dissected/`).
+> [!IMPORTANT]
+> Snapshots (except `snapshots/vanilla`), unpacked third-party mods and diagrams rendered from them stay local (`snapshots/`, `dissected/`, both git-ignored). Never commit them.
