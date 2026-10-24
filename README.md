@@ -20,12 +20,8 @@ Cyberpunk 2077 mods, and notes on how modding works. Long-term goal: questline m
 > - files from other authors' mods
 
 - `NOTES.md`: findings on how modding works
-- `TOOLS.md`: index of modding tools (WolvenKit, ...) and the scripts in `tools/`
-- `tools/snap.sh`: snapshot the game dir and Proton prefix, diff before/after installing a mod
-- `tools/verify_steam.py`: check the game dir against Steam's depot manifests (`~/.local/share/Steam/depotcache/`)
-- `tools/savdat.py`: decode a `sav.dat`: node tree, node dumps, facts by name, fact diffs between saves
-- `tools/questgraph.py`: render a `.questphase` or `.scene` (WolvenKit JSON) as a flowchart (needs Graphviz)
-- `tools/assetrefs.py`: list which resources an unpacked mod references: vanilla, its own, or neither
+- `TOOLS.md`: external modding tools (WolvenKit, Graphviz, ...)
+- [`tools/`](tools/README.md): our scripts and how to use them
 
 ## Setup
 
@@ -33,22 +29,3 @@ Cyberpunk 2077 mods, and notes on how modding works. Long-term goal: questline m
 uv sync
 uv run pre-commit install
 ```
-
-## Usage
-
-```sh
-tools/snap.sh take before
-# install a mod
-tools/snap.sh take after
-tools/snap.sh diff before after
-
-uv run tools/savdat.py facts <save>/sav.dat q101_done
-uv run tools/savdat.py factdiff <old>/sav.dat <new>/sav.dat [candidate fact names...]
-
-uv run tools/questgraph.py <file>.questphase.json -o graph.svg
-uv run tools/questgraph.py <file>.scene.json --from <node id> --stop <node id> --loc <subtitles>.json --fold -o graph.png
-
-uv run tools/assetrefs.py <mod dir with raw/ and json/> <metadata-resources.csv> [-v]
-```
-
-Snapshots (except `snapshots/vanilla`), unpacked third-party mods and diagrams rendered from them stay local (`snapshots/`, `dissected/`).
