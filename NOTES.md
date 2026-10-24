@@ -87,6 +87,7 @@ Check these before building our own.
 
 - What file types does mod.io accept for Cyberpunk? Any native code, CET, RED4ext?
 - Does 2.5 compile `.script` files itself, or only load the shipped `r6/cache/*.redscripts`? The exe globs `*.redscripts`, which points to the latter.
-- Which ArchiveXL features does the native loader support? Seen working: streaming, journal, localization. Unknown: resource patching, factories, quest phases.
+- Which ArchiveXL features does the native loader support? Seen working: streaming, journal, localization. Its config keys (from the exe) also cover sector `nodeMutations`/`nodeDeletions`/instance and actor mutations, `lipmaps`/`vomaps`, resource `copy`/`hide`/`tags`/`overrides`, `factories` and `customizations`. No key for adding quests or quest phases was found.
+- Can a mod add a root quest to an existing save (like the native `QuestsSystem::AddQuest` that DLC root quests rely on) without native code? Vanilla scripts expose `StartGameDefinition` (start a new game from a `.gamedef`) on the main-menu request handler, but nothing that adds a quest to a running game was found.
 - WolvenKit GUI under Wine/Proton: usable for quest and scene editing?
-- Quest structure: `.questphase`, `.scene`, journal, facts. Is there a way to hook a new quest phase in without replacing a vanilla file (ArchiveXL, 2.5 itself)?
+- Quest structure: `.gamedef` lists root `.quest` files (base game, plus `ep1\quest\ep1.quest` for Phantom Liberty), which run `.questphase` graphs, which play `.scene`s. Is there a way to hook a new quest phase in without replacing a vanilla file (ArchiveXL, 2.5 itself)?
