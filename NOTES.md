@@ -2,6 +2,16 @@
 
 Generic findings on how Cyberpunk modding works. Game: Steam + Proton Experimental on Linux, AppId 1091500, Update 2.5.
 
+## Platform policy
+
+Target PC for now, but keep mods as platform agnostic as possible:
+
+- Prefer data (tweaks, archives, quest graphs, scenes) over scripts. Data mods are the likeliest to work on consoles.
+- Use redscript only where data can't do the job, and make the mod degrade gracefully if the script never runs.
+- No CET or RED4ext (native code, PC only).
+
+We have no console to test on. Console support for redscript is unconfirmed: mod.io gets a per-platform copy of each upload, but whether consoles run the scripts is unknown.
+
 ## Mod ecosystems
 
 - **mod.io** (Update 2.5, 2026-10-22): official, cross-platform (PC, Mac, PS5, Xbox, Switch 2), browsed and installed in-game. ~39 mods at launch.
