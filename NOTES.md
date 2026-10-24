@@ -69,7 +69,8 @@ Decoded by `tools/savdat.py`, checked against the facts listed in `metadata.9.js
 - Mods can replace vanilla files, including `.questphase` quest graphs, by shipping the same resource path in their archive. Two mods replacing the same file conflict.
 - Fact values are signed 32-bit (`-1` is stored as `0xffffffff`).
 - Archive name prefixes like `#` and `z` are probably load order (alphabetical, last wins), as in the Nexus convention. Not verified for the mod.io loader.
-- ArchiveXL, TweakXL and redscript formats appear in mod.io mods. Not yet known if 2.5 supports them natively or bundles them.
+- 2.5 has its own loader for ArchiveXL-style content. On a vanilla install (no RED4ext, no ArchiveXL), mod.io mods' streaming blocks, journal entries and localization load, and redscript runs. Every mod.io mod we installed ships `X.archive.xl` plus `X.archive.json` with the same content. The game exe contains `*.archive`, `.json`, `*.redscripts` and `about.json`, but not `.xl` or `ArchiveXL`. Likely: the native loader reads `.archive.json` and precompiled `r6/cache/*.redscripts`, and `.xl` is kept for Nexus ArchiveXL. Not confirmed.
+- The Nexus frameworks (RED4ext and its plugins ArchiveXL, TweakXL, Codeware) broke with 2.5; only unofficial fixes existed at launch. Native code is outside the mod.io path anyway.
 - Redscript runs on 2.5 via mod.io (PC, Proton). A mod's `.script` wraps an elevator method and sets facts; after an elevator ride those facts appeared in the save, and no quest or scene file writes them.
 - Data-only mods can do a lot through quest scenes: `questInputAction_ConditionType` reads stick and button input (e.g. "player is idle"), `questInventory_ConditionType` + `questAddRemoveItem` check and consume items, and scenes can play vanilla player animations with vanilla props attached.
 - mod.io tags some mods "Available on Consoles". Mods that ship scripts seem not to carry it; not confirmed.
@@ -83,6 +84,7 @@ Check these before building our own.
 ## Open questions
 
 - What file types does mod.io accept for Cyberpunk? Any native code, CET, RED4ext?
-- Does 2.5 compile `.script` files itself, or do mods ship `r6/cache/*.redscripts` precompiled?
+- Does 2.5 compile `.script` files itself, or only load the shipped `r6/cache/*.redscripts`? The exe globs `*.redscripts`, which points to the latter.
+- Which ArchiveXL features does the native loader support? Seen working: streaming, journal, localization. Unknown: resource patching, factories, quest phases.
 - WolvenKit GUI under Wine/Proton: usable for quest and scene editing?
 - Quest structure: `.questphase`, `.scene`, journal, facts. Is there a way to hook a new quest phase in without replacing a vanilla file (ArchiveXL, 2.5 itself)?
