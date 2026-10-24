@@ -1,3 +1,5 @@
 snapshots/*
 !snapshots/vanilla/
 dissected/
+.venv/
+__pycache__/

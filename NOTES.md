@@ -42,6 +42,18 @@ Skip-to-Phantom-Liberty start: level 15, `q301_active=1`, `ep1_active=1`, Act 1 
 
 Installing or enabling mods writes nothing besides the files above; playing only adds saves, `user.gls` and the vkd3d shader cache in the game dir.
 
+### sav.dat format
+
+Decoded by `tools/savdat.py`, checked against the facts listed in `metadata.9.json`.
+
+- `VASC` magic, save version (277 on 2.5), game version (2500).
+- `FZLC` table: u32 count, then (offset, compressed size, decompressed size) per chunk. Chunks are `4ZLX` + u32 size + an LZ4 block, 256 KiB each decompressed. A 1.8 MB save is 7.2 MB decompressed.
+- Node table at the end: file ends with u32 offset + `ENOD`; at that offset `EDON`, a count, then per node a name, next index, child index, offset, size. Offsets point into header + decompressed chunks.
+- ~286 nodes: `PersistencySystem2` (4.7 MB), `CommunitySystem` (1.8 MB), `inventory`, `JournalManager`, `ScriptableSystemsContainer`, `questSystem` > `FactsDB` > 10 `FactsTable`, `PhoneManager`, `ModdingSystem`, ...
+- `FactsTable`: u32 node index, count, count × u32 FNV-1a 32 name hashes, count × u32 values. ~4,400 facts in an early Phantom Liberty save. Names are not stored; to read a fact you need its name.
+- Node indices shift between saves; compare FactsTables by position.
+- Names differing only in the last character hash to values that differ by multiples of the FNV prime (`0x01000193`), so numbered fact families (`x_1`, `x_2`, ...) show up as runs.
+
 ## Observations
 
 - Archive name prefixes like `#` and `z` are probably load order (alphabetical, last wins), as in the Nexus convention. Not verified for the mod.io loader.

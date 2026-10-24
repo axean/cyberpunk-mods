@@ -1,0 +1,47 @@
+# Install with `uv run pre-commit install`. Snapshots are recorded data, so no hook touches them.
+exclude: ^snapshots/
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.1
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1-1
+    hooks:
+      - id: shellcheck
+
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright (strict; settings in pyproject.toml)
+        language: node
+        additional_dependencies: ["pyright@1.1.414"]
+        entry: pyright
+        types: [python]
+        pass_filenames: false
+
+      - id: pytest
+        name: pytest
+        language: system
+        entry: uv run --frozen pytest -q
+        types: [python]
+        pass_filenames: false
