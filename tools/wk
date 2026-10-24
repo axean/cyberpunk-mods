@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Run the pinned WolvenKit CLI. Install it with tools/install-wolvenkit.sh.
+set -euo pipefail
+WK_VERSION="${WK_VERSION:-10.0.0-beta.1}"
+export DOTNET_ROOT="${DOTNET_ROOT:-$HOME/.local/opt/dotnet}"
+exec "$HOME/.local/opt/wolvenkit/$WK_VERSION/WolvenKit.CLI" "$@"

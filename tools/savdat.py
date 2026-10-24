@@ -112,7 +112,7 @@ def facts(save: Save) -> dict[tuple[int, int], int]:
         buf = save.blob(node)
         n, i = varint(buf, 4)  # first 4 bytes: node index
         hashes = struct.unpack_from(f"<{n}I", buf, i)
-        values = struct.unpack_from(f"<{n}I", buf, i + 4 * n)
+        values = struct.unpack_from(f"<{n}i", buf, i + 4 * n)  # facts are signed
         out.update(((pos, h), v) for h, v in zip(hashes, values, strict=True))
     return out
 

@@ -56,6 +56,8 @@ Decoded by `tools/savdat.py`, checked against the facts listed in `metadata.9.js
 
 ## Observations
 
+- Mods can replace vanilla files, including `.questphase` quest graphs, by shipping the same resource path in their archive. Two mods replacing the same file conflict.
+- Fact values are signed 32-bit (`-1` is stored as `0xffffffff`).
 - Archive name prefixes like `#` and `z` are probably load order (alphabetical, last wins), as in the Nexus convention. Not verified for the mod.io loader.
 - ArchiveXL, TweakXL and redscript formats appear in mod.io mods. Not yet known if 2.5 supports them natively or bundles them.
 
@@ -63,5 +65,5 @@ Decoded by `tools/savdat.py`, checked against the facts listed in `metadata.9.js
 
 - What file types does mod.io accept for Cyberpunk? Any native code, CET, RED4ext?
 - Does 2.5 compile `.script` files itself, or do mods ship `r6/cache/*.redscripts` precompiled?
-- WolvenKit on Linux: CLI for unpacking, GUI under Wine?
+- WolvenKit GUI under Wine/Proton: usable for quest and scene editing?
 - Quest structure: `.questphase`, `.scene`, journal, facts. How do they hook into the main quest graph?

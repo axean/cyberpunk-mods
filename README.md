@@ -3,6 +3,7 @@
 Cyberpunk 2077 mods, and notes on how modding works. Long-term goal: questline mods.
 
 - `NOTES.md`: findings on how modding works
+- `TOOLS.md`: index of modding tools (WolvenKit, ...) and the scripts in `tools/`
 - `tools/snap.sh`: snapshot the game dir and Proton prefix, diff before/after installing a mod
 - `tools/verify_steam.py`: check the game dir against Steam's depot manifests (`~/.local/share/Steam/depotcache/`)
 - `tools/savdat.py`: decode a `sav.dat`: node tree, node dumps, facts by name, fact diffs between saves
