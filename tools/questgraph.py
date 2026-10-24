@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render a quest graph (.questphase or .scene, as WolvenKit JSON) as a flowchart.
+"""Render a quest graph (.quest, .questphase or .scene, as WolvenKit JSON) as a flowchart.
 
     questgraph.py <file.json> [-o out.svg|.png|.pdf|.dot] [--from ID ...] [--stop ID ...]
                   [--loc strings.json ...] [--fold]
@@ -220,6 +220,10 @@ def quest_node(q: J, h: Handles) -> tuple[str, str]:
         return "call", "scene\n" + basename(q.get("sceneFile"))
     if t == "questPhaseNodeDefinition":
         return "call", "phase\n" + basename(q.get("phaseResource"))
+    if t == "questStartNodeDefinition":
+        return "start", "start"
+    if t == "questEndNodeDefinition":
+        return "end", "end"
     if t == "questInputNodeDefinition":
         return "start", f"in: {value(q.get('socketName'))}"
     if t == "questOutputNodeDefinition":
@@ -391,12 +395,12 @@ def build(doc: J, loc: dict[str, str]) -> Graph:
     h = Handles(doc)
     root = doc["Data"]["RootChunk"]
     g = Graph()
-    if root["$type"] == "questQuestPhaseResource":
+    if root["$type"] in ("questQuestPhaseResource", "questQuestResource"):
         questphase_graph(g, h.get(root["graph"]), h, "", "")
     elif root["$type"] == "scnSceneResource":
         scene_graph(g, root, h, loc)
     else:
-        raise ValueError(f"not a questphase or scene: {root['$type']}")
+        raise ValueError(f"not a quest, questphase or scene: {root['$type']}")
     return g
 
 

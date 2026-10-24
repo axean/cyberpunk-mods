@@ -19,7 +19,7 @@ Scripts for studying and building mods. External tools (WolvenKit, Graphviz, RED
 | `snap.sh` | Snapshot the game dir and Proton prefix, diff before/after installing a mod |
 | `verify_steam.py` | Check the game dir against Steam's depot manifests (`~/.local/share/Steam/depotcache/`) |
 | `savdat.py` | Decode a `sav.dat`: node tree, node dumps, facts by name, fact diffs between saves |
-| `questgraph.py` | Render a `.questphase` or `.scene` (WolvenKit JSON) as a flowchart (needs Graphviz) |
+| `questgraph.py` | Render a `.quest`, `.questphase` or `.scene` (WolvenKit JSON) as a flowchart (needs Graphviz) |
 | `assetrefs.py` | List which resources an unpacked mod references: vanilla, its own, or neither |
 
 ## Usage

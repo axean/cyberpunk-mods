@@ -137,3 +137,9 @@ def test_fold_merges_twins() -> None:
     folded = questgraph.fold(g)
     assert len(folded.nodes) == 3
     assert "(+1 similar)" in folded.nodes["10"].label
+
+
+def test_root_quest_uses_the_same_graph_format() -> None:
+    doc = questphase()
+    doc["Data"]["RootChunk"]["$type"] = "questQuestResource"
+    assert questgraph.build(doc, {}).nodes["1"].kind == "decision"
