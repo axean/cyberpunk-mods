@@ -74,9 +74,15 @@ Decoded by `tools/savdat.py`, checked against the facts listed in `metadata.9.js
 - Data-only mods can do a lot through quest scenes: `questInputAction_ConditionType` reads stick and button input (e.g. "player is idle"), `questInventory_ConditionType` + `questAddRemoveItem` check and consume items, and scenes can play vanilla player animations with vanilla props attached.
 - mod.io tags some mods "Available on Consoles". Mods that ship scripts seem not to carry it; not confirmed.
 
+## Existing frameworks
+
+Check these before building our own.
+
+- **Deceptious Quest Core (DQC)**, by Deceptious, on mod.io and Nexus. The problem: a new quest phase only loads if an already running quest graph points to it, so quest mods have to replace a vanilla quest file to hook in, and two mods replacing the same file conflict. DQC takes one vanilla hook and lets many quest mods hang off it, so they no longer replace vanilla files or collide. Mods activate when V leaves and re-enters the H10 apartment, and the phone lists active mods and can reset them. It adds no content of its own. It is the author's framework for their own mods; using it for ours would need their permission (see the Nexus "Permissions and credits" section).
+
 ## Open questions
 
 - What file types does mod.io accept for Cyberpunk? Any native code, CET, RED4ext?
 - Does 2.5 compile `.script` files itself, or do mods ship `r6/cache/*.redscripts` precompiled?
 - WolvenKit GUI under Wine/Proton: usable for quest and scene editing?
-- Quest structure: `.questphase`, `.scene`, journal, facts. How do they hook into the main quest graph?
+- Quest structure: `.questphase`, `.scene`, journal, facts. Is there a way to hook a new quest phase in without replacing a vanilla file (ArchiveXL, 2.5 itself)?
