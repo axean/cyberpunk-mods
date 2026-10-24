@@ -1,5 +1,13 @@
 # cyberpunk-mods
 
+[![Cyberpunk 2077](https://img.shields.io/badge/Cyberpunk_2077-2.5-FCEE0A)](https://www.cyberpunk.net/)
+[![Unofficial fan work](https://img.shields.io/badge/fan_work-unofficial-lightgrey)](https://www.cdprojektred.com/en/fan-content)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Checked with pyright](https://microsoft.github.io/pyright/img/pyright_badge.svg)](https://microsoft.github.io/pyright/)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+
 Cyberpunk 2077 mods, and notes on how modding works. Long-term goal: questline mods.
 
 > [!IMPORTANT]
