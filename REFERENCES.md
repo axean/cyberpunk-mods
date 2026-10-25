@@ -48,7 +48,9 @@ External resources we found useful, with what each is good for. Links only; noth
 | [softsoundd/MirrorsEdgeTweaks](https://github.com/softsoundd/MirrorsEdgeTweaks) | GPL-3.0 | Current fixes and tweaks tool for the 2008 game |
 | [softsoundd/MirrorsEdgeMapManager](https://github.com/softsoundd/MirrorsEdgeMapManager) | MIT | Custom map manager |
 | [tnrjns/faith-runner](https://github.com/tnrjns/faith-runner) | MIT | Mirror's Edge movement, animation and first-person body re-implemented in Rust (Bevy), with Ghidra extraction notes |
-| [dragon-fish/parkour-game](https://github.com/dragon-fish/parkour-game) | | Parkour game with a `docs/mirrors-edge-deep-research` folder (acceleration references) |
+| [dragon-fish/parkour-game](https://github.com/dragon-fish/parkour-game) | AGPL-3.0 + commercial | Godot parkour game. `docs/mirrors-edge-deep-research` (Chinese) is a reverse-engineering handbook on Mirror's Edge movement: speed curve, speed loss, wall run/climb/kick physics, the move state machine, all default values (appendix A1), tools incl. a frame-by-frame HUD reader |
+| [btbd/mmultiplayer](https://github.com/btbd/mmultiplayer) ([softsoundd fork](https://github.com/softsoundd/mmultiplayer)) | | Multiplayer mod; `Client/sdk/` is a generated SDK of the game's classes: the `EMovement` enum (94 movement states) and field offsets |
+| [Eideren/Mirror-s-Edge](https://github.com/Eideren/Mirror-s-Edge) | | Port to Unity with the game's scripts converted to C# (`TdMove_WallRun`, `TdPawn`, ...) |
 | [speedrun.com/me](https://www.speedrun.com/me) | | Speedrun community: movement tech, resources |
 
 ## Parkour in other games
