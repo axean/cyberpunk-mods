@@ -79,6 +79,7 @@ Decoded by `tools/savdat.py`, checked against the facts listed in `metadata.9.js
 - WolvenKit CLI 10.0.0-beta.1 converts game files to JSON and back byte-identically (tested on a `.questphase` and a `.streamingsector`), so mods can be written as JSON (or generated) and converted at build time. `convert deserialize` writes its output flat, without the input's folders.
 - Quest graphs in WolvenKit JSON: sockets and connections are shared objects (`HandleId` on first use, `HandleRefId` after), so each connection appears in both its source and destination socket. Journal nodes have `Active`/`Inactive` inputs; journal paths use `fileEntryIndex: 1` everywhere, vanilla and mods.
 - A mod's journal can add a conversation under a vanilla contact by using a folder with the contact's path as id (e.g. `contacts/unknown`); entries merge by id.
+- mod.io API: write calls on `api.mod.io` fail with 401 "deprecated api.mod.io domain"; use the per-game domain `https://g-5784.modapi.io/v1`. Uploads need a personal access token with write scope (OAuth clients are deprecated); the read-only API key cannot upload.
 - mod.io tags some mods "Available on Consoles". Mods that ship scripts seem not to carry it; not confirmed.
 
 ## Existing frameworks
