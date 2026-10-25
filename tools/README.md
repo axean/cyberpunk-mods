@@ -22,7 +22,7 @@ Scripts for studying and building mods. External tools (WolvenKit, Graphviz, RED
 | `questgraph.py` | Render a `.quest`, `.questphase` or `.scene` (WolvenKit JSON) as a flowchart (needs Graphviz) |
 | `assetrefs.py` | List which resources an unpacked mod references: vanilla, its own, or neither |
 | `wkjson.py` | Write WolvenKit JSON from Python: quest graphs, journal, onscreen text, trigger sectors |
-| `build-mod.sh` | Build `mods/<mod>` (its `build.py`) into a mod.io zip under `build/` |
+| `build-mod.sh` | Build `mods/<mod>` (its `build.py`) into a mod.io zip under `build/`, and sideload it into the game |
 
 ## Usage
 
@@ -40,7 +40,9 @@ uv run tools/questgraph.py <file>.scene.json --from <node id> --stop <node id> -
 
 uv run tools/assetrefs.py <mod dir with raw/ and json/> <metadata-resources.csv> [-v]
 
-tools/build-mod.sh mods/<mod>
+tools/build-mod.sh mods/<mod>                # build into build/<mod>/<mod>.zip
+tools/build-mod.sh mods/<mod> --install      # build and sideload into the game's archive/pc/mod/
+tools/build-mod.sh mods/<mod> --uninstall    # remove what --install put there
 ```
 
 Each script prints its full usage with `--help` or without arguments.

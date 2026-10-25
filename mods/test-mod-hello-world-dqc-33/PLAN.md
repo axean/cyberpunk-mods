@@ -33,7 +33,7 @@ The message is sent once per registration. Resetting slot 33 from DQC's phone me
 Result 2026-10-25, local route: the text arrived as soon as the save loaded (behind Viktor's), since DQC was already waiting for slot 33's trigger in that save.
 
 
-1. Local route first: copy `build/.../mod/archive/*` into the game's `archive/pc/mod/` (done 2026-10-25; delete the three files to uninstall). Unknown whether the 2.5 loader reads `.archive.json` there.
+1. Local route: `tools/build-mod.sh mods/test-mod-hello-world-dqc-33 --install` (`--uninstall` to remove). Safe while the game runs, but the game only loads the new build after a full restart.
 2. In game: enter the apartment (leave and re-enter if already inside), expect a text from an unknown number: "Hello world!".
 3. Check with `tools/savdat.py facts <save>/sav.dat deceptious_quest_33`: `-1` means DQC found the trigger and the phase ran; `0` means the trigger (streaming block) did not load.
 4. If the local route does not load: hidden mod.io upload (step 4).
@@ -47,6 +47,14 @@ Result 2026-10-25, local route: the text arrived as soon as the save loaded (beh
 The upload cannot be automated: Cyberpunk's mod.io platforms are locked, and the API only lets game admins target locked platforms. An API upload ends up with no platforms and can never go live (tried 2026-10-25). The website files the platform as a pending request instead.
 
 To release: `git tag test-mod-hello-world-v0.1.3 && git push origin test-mod-hello-world-v0.1.3`, then download the zip from the release.
+
+### mod.io review log
+
+To see how long CDPR's review takes. Times from mod.io's file data.
+
+| When (UTC) | File | Event |
+|---|---|---|
+| 2026-10-25 11:01 | 8375376, `0.1.2-web` | Uploaded on the website with Windows; platform status pending |
 
 ## 5. Before going public
 

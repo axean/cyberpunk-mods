@@ -1,16 +1,46 @@
 #!/usr/bin/env bash
-# Build one of our mods into build/<mod>/<mod>.zip (mod.io folder layout).
+# Build one of our mods into build/<mod>/<mod>.zip (mod.io folder layout), and optionally
+# sideload it into the game.
 #
-#   build-mod.sh mods/<mod>
+#   build-mod.sh mods/<mod>               build
+#   build-mod.sh mods/<mod> --install     build, then copy the archive files into the game's
+#                                         archive/pc/mod/ (safe while the game runs)
+#   build-mod.sh mods/<mod> --uninstall   remove the files --install put there
 #
 # Runs mods/<mod>/build.py (writes WolvenKit JSON and the loader files), converts the JSON
 # to game files, checks each converts back to the same JSON, and packs the archive.
+# Installed files are listed in build/installed/<mod>.txt.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 MOD="$(cd "$1" && pwd)"
 NAME="$(basename "$MOD")"
 OUT="$ROOT/build/$NAME"
+STEAM="${STEAM:-$HOME/.local/share/Steam/steamapps}"
+GAME_MODS="$STEAM/common/Cyberpunk 2077/archive/pc/mod"
+MANIFEST="$ROOT/build/installed/$NAME.txt"
+
+game_running() { pgrep -f '[C]yberpunk2077\.exe' >/dev/null; }
+
+# A running game keeps reading the old file: replace by rename, never overwrite in place.
+replace() {
+    cp "$1" "$GAME_MODS/.$(basename "$1").tmp"
+    mv -f "$GAME_MODS/.$(basename "$1").tmp" "$GAME_MODS/$(basename "$1")"
+}
+
+uninstall() {
+    [[ -f $MANIFEST ]] || return 0
+    while read -r f; do
+        rm -f "$GAME_MODS/$f"
+        echo "removed $GAME_MODS/$f"
+    done <"$MANIFEST"
+    rm "$MANIFEST"
+}
+
+if [[ ${2:-} == --uninstall ]]; then
+    uninstall
+    exit 0
+fi
 
 rm -rf "$OUT"
 uv run --project "$ROOT" python "$MOD/build.py" "$OUT"
@@ -34,3 +64,19 @@ done
 (cd "$OUT/mod" && zip -qr "../$NAME.zip" .)
 echo "built $OUT/$NAME.zip"
 (cd "$OUT/mod" && find . -type f | sort)
+
+if [[ ${2:-} == --install ]]; then
+    game_running && echo "note: the game is running; it may need a restart to load the change"
+    mkdir -p "$GAME_MODS" "$(dirname "$MANIFEST")"
+    old="$(cat "$MANIFEST" 2>/dev/null || true)"
+    rm -f "$MANIFEST"
+    for f in "$OUT"/mod/archive/*; do
+        replace "$f"
+        basename "$f" >>"$MANIFEST"
+        echo "installed $GAME_MODS/$(basename "$f")"
+    done
+    # files from an earlier install that this build no longer has
+    for f in $old; do
+        grep -qxF "$f" "$MANIFEST" || { rm -f "$GAME_MODS/$f"; echo "removed $GAME_MODS/$f"; }
+    done
+fi
