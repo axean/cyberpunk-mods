@@ -22,7 +22,7 @@ Cyberpunk 2077 mods, and notes on how modding works. Long-term goal: questline m
 - `NOTES.md`: findings on how modding works
 - `TOOLS.md`: external modding tools (WolvenKit, Graphviz, ...)
 - [`tools/`](tools/README.md): our scripts and how to use them
-- `mods/`: our own mods ([`test-mod-hello-world-dqc-33`](mods/test-mod-hello-world-dqc-33/README.md): DQC slot test)
+- `mods/`: our own mods ([`test-mod-hello-world-dqc-33`](mods/test-mod-hello-world-dqc-33/README.md): DQC slot test; [`dev-status`](mods/dev-status/README.md): texts which dev mods are loaded)
 
 ## Setup
 

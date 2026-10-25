@@ -11,7 +11,9 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parents[1] / "tools"))
+import devstatus  # noqa: E402
 import wkjson as wk  # noqa: E402
 
 ARCHIVE = "hello_world_dqc_33"
@@ -65,8 +67,11 @@ def main() -> None:
     wk.write(src, PHASE, slot_phase().phase())
     message = wk.message("hello", f"{ARCHIVE}_hello")
     chat = wk.conversation(ARCHIVE, f"{ARCHIVE}_title", [message])
-    wk.write(src, JOURNAL, wk.journal([wk.folder("contacts/unknown", [chat])]))
-    wk.write(src, ONSCREENS, wk.onscreens(TEXT))
+    status, status_texts = devstatus.register(
+        "test-mod-hello-world-dqc-33", f"hello world loaded, {devstatus.stamp(HERE)}"
+    )
+    wk.write(src, JOURNAL, wk.journal([wk.folder("contacts/unknown", [chat, status])]))
+    wk.write(src, ONSCREENS, wk.onscreens(TEXT | status_texts))
     sector = wk.trigger_sector(TRIGGER_REF, TRIGGER_NODE_ID, (4000, 4000, 1000), "{dqc_tr}")
     wk.write(src, SECTOR, sector)
     wk.write(src, BLOCK, wk.streaming_block([SECTOR]))

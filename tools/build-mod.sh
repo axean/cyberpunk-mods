@@ -4,12 +4,13 @@
 #
 #   build-mod.sh mods/<mod>               build
 #   build-mod.sh mods/<mod> --install     build, then copy the archive files into the game's
-#                                         archive/pc/mod/ (safe while the game runs)
+#                                         archive/pc/mod/ and scripts into r6/scripts/
+#                                         (safe while the game runs; restart to load)
 #   build-mod.sh mods/<mod> --uninstall   remove the files --install put there
 #
 # Runs mods/<mod>/build.py (writes WolvenKit JSON and the loader files), converts the JSON
 # to game files, checks each converts back to the same JSON, and packs the archive.
-# Installed files are listed in build/installed/<mod>.txt.
+# Installed files are listed in build/installed/<mod>.txt, relative to the game dir.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -17,22 +18,24 @@ MOD="$(cd "$1" && pwd)"
 NAME="$(basename "$MOD")"
 OUT="$ROOT/build/$NAME"
 STEAM="${STEAM:-$HOME/.local/share/Steam/steamapps}"
-GAME_MODS="$STEAM/common/Cyberpunk 2077/archive/pc/mod"
+GAME="$STEAM/common/Cyberpunk 2077"
 MANIFEST="$ROOT/build/installed/$NAME.txt"
 
 game_running() { pgrep -f '[C]yberpunk2077\.exe' >/dev/null; }
 
 # A running game keeps reading the old file: replace by rename, never overwrite in place.
 replace() {
-    cp "$1" "$GAME_MODS/.$(basename "$1").tmp"
-    mv -f "$GAME_MODS/.$(basename "$1").tmp" "$GAME_MODS/$(basename "$1")"
+    mkdir -p "$(dirname "$2")"
+    cp "$1" "$2.tmp"
+    mv -f "$2.tmp" "$2"
 }
 
 uninstall() {
     [[ -f $MANIFEST ]] || return 0
     while read -r f; do
-        rm -f "$GAME_MODS/$f"
-        echo "removed $GAME_MODS/$f"
+        [[ $f == */* ]] || f="archive/pc/mod/$f"  # older manifests listed bare archive names
+        rm -f "$GAME/$f"
+        echo "removed $GAME/$f"
     done <"$MANIFEST"
     rm "$MANIFEST"
 }
@@ -67,16 +70,22 @@ echo "built $OUT/$NAME.zip"
 
 if [[ ${2:-} == --install ]]; then
     game_running && echo "note: the game is running; it may need a restart to load the change"
-    mkdir -p "$GAME_MODS" "$(dirname "$MANIFEST")"
+    mkdir -p "$(dirname "$MANIFEST")"
     old="$(cat "$MANIFEST" 2>/dev/null || true)"
-    rm -f "$MANIFEST"
-    for f in "$OUT"/mod/archive/*; do
-        replace "$f"
-        basename "$f" >>"$MANIFEST"
-        echo "installed $GAME_MODS/$(basename "$f")"
-    done
+    : >"$MANIFEST"
+    while read -r rel; do
+        case $rel in
+            archive/*) dest="archive/pc/mod/${rel#archive/}" ;;
+            r6/scripts/*) dest="$rel" ;;
+            *) continue ;;  # about.json is for mod.io only
+        esac
+        replace "$OUT/mod/$rel" "$GAME/$dest"
+        echo "$dest" >>"$MANIFEST"
+        echo "installed $GAME/$dest"
+    done < <(cd "$OUT/mod" && find . -type f -printf '%P\n' | sort)
     # files from an earlier install that this build no longer has
     for f in $old; do
-        grep -qxF "$f" "$MANIFEST" || { rm -f "$GAME_MODS/$f"; echo "removed $GAME_MODS/$f"; }
+        [[ $f == */* ]] || f="archive/pc/mod/$f"  # older manifests listed bare archive names
+        grep -qxF "$f" "$MANIFEST" || { rm -f "$GAME/$f"; echo "removed $GAME/$f"; }
     done
 fi
