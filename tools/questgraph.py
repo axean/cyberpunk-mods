@@ -40,6 +40,8 @@ def obj(o: J) -> dict[str, J]:
     return o if is_dict(o) else {}
 
 
+JOURNAL_STATES = ("Active", "Inactive", "Succeeded", "Failed")
+
 OPS = {
     "Equal": "==",
     "NotEqual": "!=",
@@ -325,6 +327,8 @@ def questphase_graph(g: Graph, graph_def: J, h: Handles, prefix: str, cluster: s
                 skey = inner_io.get(skey, {}).get(sname, skey)
                 dkey = inner_io.get(dkey, {}).get(dname, dkey)
                 label = sname if sname not in ("Out", "Out1") else ""
+                if dname in JOURNAL_STATES:  # journal nodes: which state the entry gets
+                    label = f"{label} → {dname}" if label else f"→ {dname}"
                 g.link(skey, dkey, label)
 
 

@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Any
 
 import questgraph
+import wkjson
 
 
 def cname(s: str) -> dict[str, str]:
@@ -143,3 +144,15 @@ def test_root_quest_uses_the_same_graph_format() -> None:
     doc = questphase()
     doc["Data"]["RootChunk"]["$type"] = "questQuestResource"
     assert questgraph.build(doc, {}).nodes["1"].kind == "decision"
+
+
+def test_journal_edges_show_the_state_set() -> None:
+    g = wkjson.Graph()
+    start = g.add(wkjson.input_node(0))
+    on = g.add(wkjson.journal_node(1, "contacts/x/chat", "gameJournalPhoneConversation"))
+    off = g.add(wkjson.journal_node(2, "contacts/x/chat", "gameJournalPhoneConversation"))
+    g.connect(start, on, into="Active")
+    g.connect(on, off, into="Inactive")
+    out = questgraph.build(wkjson.document(g.phase()), {})
+    assert questgraph.Edge("0", "1", "→ Active") in out.edges
+    assert questgraph.Edge("1", "2", "→ Inactive") in out.edges

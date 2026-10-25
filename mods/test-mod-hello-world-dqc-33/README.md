@@ -29,3 +29,14 @@ DQC checks each slot when V enters the H10 apartment. If the slot's mod is missi
 No DQC files are copied or modified. DQC's phone list will show slot 33 without a name, since slot names live in DQC.
 
 The text comes from the vanilla "unknown number" contact, so the mod defines no contact of its own.
+
+## Slot phase
+
+![Slot phase flowchart](slot_phase.svg)
+
+Regenerate after changing `build.py`:
+
+```sh
+tools/build-mod.sh mods/test-mod-hello-world-dqc-33
+uv run tools/questgraph.py build/test-mod-hello-world-dqc-33/json/base/quest/deceptious_quests/deceptious_quest_33.questphase.json -o mods/test-mod-hello-world-dqc-33/slot_phase.svg
+```
