@@ -45,3 +45,12 @@ def test_outline_buffer_holds_points_and_height() -> None:
     assert struct.unpack_from("<I", raw) == (4,)
     assert struct.unpack_from("<4f", raw, 4) == (-1, -1, 0, 1)
     assert struct.unpack_from("<f", raw, 4 + 16 * 4) == (outline["height"],)
+
+
+def test_decode_inverts_encode_and_keeps_missing_refs() -> None:
+    shared = wk.Handle({"$type": "x"})
+    doc: Any = wk.encode({"a": shared, "b": [shared], "c": {"HandleRefId": "-1"}}, {})
+    back: Any = wk.decode(doc)
+    assert back["a"] is back["b"][0]
+    assert back["c"] == {"HandleRefId": "-1"}
+    assert wk.encode(back, {}) == doc

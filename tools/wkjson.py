@@ -47,6 +47,24 @@ def encode(o: J, ids: dict[int, str]) -> J:
     return o
 
 
+def decode(o: J, ids: dict[str, Handle] | None = None) -> J:
+    """Inverse of encode: HandleId/HandleRefId become shared Handle objects. Ids are unique across
+    the whole file, embedded buffers (e.g. ink library items) included."""
+    ids = {} if ids is None else ids
+    if isinstance(o, dict):
+        d = cast(dict[str, J], o)
+        if d.keys() == {"HandleRefId"}:
+            return ids.get(d["HandleRefId"], d)  # "-1": no target, kept as is
+        if d.keys() == {"HandleId", "Data"}:
+            h = ids[d["HandleId"]] = Handle({})
+            h.data = decode(d["Data"], ids)
+            return h
+        return {k: decode(v, ids) for k, v in d.items()}
+    if isinstance(o, list):
+        return [decode(v, ids) for v in cast(list[J], o)]
+    return o
+
+
 def document(root: dict[str, J]) -> dict[str, J]:
     data: dict[str, J] = {
         "Version": 195,
