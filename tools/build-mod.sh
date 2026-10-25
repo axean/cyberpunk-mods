@@ -63,6 +63,11 @@ find "$OUT/json" -name '*.json' -printf '%P\n' | sort | while read -r rel; do
         "$OUT/json/$rel" "$OUT/check/$rel" || { echo "round trip changed $res" >&2; exit 1; }
 done
 
+if [[ -d $OUT/mod/r6/scripts ]]; then
+    "$ROOT/tools/redscript-check.sh" "$OUT/mod/r6/scripts" >/dev/null \
+        || { "$ROOT/tools/redscript-check.sh" "$OUT/mod/r6/scripts"; exit 1; }
+fi
+
 "$ROOT/tools/wk" pack "$RAW" -o "$OUT/mod/archive" -v Quiet
 (cd "$OUT/mod" && zip -qr "../$NAME.zip" .)
 echo "built $OUT/$NAME.zip"

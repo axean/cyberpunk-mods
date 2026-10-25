@@ -24,6 +24,7 @@ Scripts for studying and building mods. External tools (WolvenKit, Graphviz, RED
 | `wkjson.py` | Write WolvenKit JSON from Python: quest graphs, journal, onscreen text, trigger sectors |
 | `install-redscript.sh` | Installs the pinned redscript compiler into the game dir (`--uninstall` removes it) |
 | `devstatus.py` | Register a mod with dev-status (one phone text per loaded dev mod) |
+| `redscript-check.sh` | Compile redscript sources offline (redscript-cli under Proton's Wine) and report errors |
 | `build-mod.sh` | Build `mods/<mod>` (its `build.py`) into a mod.io zip under `build/`, and sideload it into the game |
 
 ## Usage
