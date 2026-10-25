@@ -2,9 +2,11 @@
 """Capture Faith's movement from a running Mirror's Edge (2008, Steam) as JSONL, for reference.
 
     me_capture.py [--hz 60] [--out captures/mirrors-edge]
+    me_capture.py --crop <capture.jsonl> <dataset.jsonl>
 
 Reads the game's memory from outside (/proc/<pid>/mem); nothing is injected or changed. Writes
 one JSON object per line to <out>/<start time>.jsonl until the game exits or Ctrl+C.
+--crop drops main menu, loading and standstill lines (nothing moved since the previous kept line).
 
 Memory layout from megem (github.com/totenhack/megem, Apache-2.0, DLL/player.h), the LiveSplit
 autosplitter (github.com/Degaussed/Livesplit-ASL-scripts) and the mmultiplayer SDK
@@ -105,11 +107,34 @@ class Game:
         return row
 
 
+def crop(lines: list[str]) -> list[str]:
+    """Lines where Faith or the camera moved: no main menu, loading or standstill."""
+    kept: list[str] = []
+    previous: tuple[Any, ...] | None = None
+    for line in lines:
+        row = json.loads(line)
+        if "error" in row or row.get("level") == "TdMainMenu":
+            continue
+        signature = (row["pos"], row.get("cam_rot", row["rot"]), row["move"])
+        if signature != previous:
+            kept.append(line)
+            previous = signature
+    return kept
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Capture Faith's movement from Mirror's Edge.")
     parser.add_argument("--hz", type=float, default=60)
     parser.add_argument("--out", type=Path, default=Path("captures/mirrors-edge"))
+    parser.add_argument("--crop", nargs=2, type=Path, metavar=("CAPTURE", "DATASET"))
     args = parser.parse_args()
+    if args.crop:
+        source, dest = args.crop
+        kept = crop(source.read_text().splitlines(keepends=True))
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text("".join(kept))
+        print(f"{dest}: {len(kept)} lines")
+        return
     pid = find_pid()
     game = Game(pid)
     args.out.mkdir(parents=True, exist_ok=True)
