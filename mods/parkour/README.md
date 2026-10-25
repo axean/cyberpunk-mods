@@ -20,6 +20,8 @@ Why stats, not pushing: pushing V with a `PSMImpulse` every frame on the ground 
 - V is pulled tight against the wall and climbs with gravity 9 m/s².
 - The height comes from the run-up speed, shaped like Faith's climbs: nothing from a standstill, 1.8 m at 3.5 m/s, 2.9 m at a full sprint, up to 4.5 m after a dash.
 - The view pitches up 25°.
+- Bumps on the wall (sills, pipes, signs) are remembered and V is held clear of them; an overhang over 0.8 m ends the climb.
+- Her upward speed follows the planned climb every frame, so the jump's first frames can't cut it short.
 - The climb ends when V stops rising or reaches the top (a small push over the edge), or when the game's own ledge climb takes over.
 
 Code: `init.lua` wires up the modules in `modules/` (state, world, input, walls, momentum, wallrun, wallclimb, camera).

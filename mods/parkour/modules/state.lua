@@ -19,6 +19,7 @@
 ---@field impact number m/s lost in the last impact
 ---@field input number[] stick: right, forward (-1..1)
 ---@field sprint_button boolean sprint (or toggle sprint) button down
+---@field idle number seconds since the last wall move ended
 
 ---@type ParkourState
 local state = {
@@ -35,6 +36,7 @@ local state = {
     impact = 0,
     input = { 0, 0 },
     sprint_button = false,
+    idle = 0,
 }
 
 return state

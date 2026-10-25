@@ -139,7 +139,15 @@ local function parkour_json()
     local state = mod.state --[[@as ParkourStateView]]
     ---@type string[]
     local walls = {}
-    for _, key in ipairs({ "left", "right", "left_high", "right_high", "ahead", "ahead_high" }) do
+    for _, key in ipairs({
+        "left",
+        "right",
+        "left_high",
+        "right_high",
+        "ahead",
+        "ahead_high",
+        "ahead_top",
+    }) do
         local hit = state.walls and state.walls[key]
         if hit then
             local n = hit.normal

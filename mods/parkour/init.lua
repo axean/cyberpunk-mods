@@ -68,6 +68,7 @@ registerForEvent("onUpdate", function(delta)
             end
         end
         momentum.update(player, v, delta)
+        state.idle = state.mode == "none" and state.idle + delta or 0
     end
     camera.update(player, delta)
 end)
