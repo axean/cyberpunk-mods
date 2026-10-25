@@ -2,6 +2,7 @@
 -- from the wall, on a wall climb it pitches up; the eye rises a little on both. Writes
 -- state.roll and state.pitch.
 
+local settings = require("modules/settings")
 local state = require("modules/state")
 
 local CAMERA = {
@@ -58,5 +59,16 @@ function camera.update(player, delta)
     )
     fpp:SetLocalPosition(Vector4.new(0, 0, lift, 0))
 end
+
+settings.section("camera", 5, CAMERA, {
+    { key = "roll_max", label = "wall run roll (deg)", min = 0, max = 45, format = "%.0f" },
+    { key = "roll_in", label = "roll in (deg/s)", min = 5, max = 150, format = "%.0f" },
+    { key = "roll_out", label = "roll out (deg/s)", min = 20, max = 400, format = "%.0f" },
+    { key = "pitch_max", label = "climb pitch (deg)", min = 0, max = 70, format = "%.0f" },
+    { key = "pitch_in", label = "pitch in (deg/s)", min = 20, max = 500, format = "%.0f" },
+    { key = "pitch_out", label = "pitch out (deg/s)", min = 20, max = 500, format = "%.0f" },
+    { key = "run_lift", label = "wall run eye lift (m)", min = 0, max = 0.3 },
+    { key = "climb_lift", label = "climb eye lift (m)", min = 0, max = 0.3 },
+})
 
 return camera

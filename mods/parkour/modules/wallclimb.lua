@@ -11,6 +11,7 @@
 -- (with a small push over the edge), at an overhang, when something blocks her, when the wall
 -- ends, or when the game's own ledge climb takes over.
 
+local settings = require("modules/settings")
 local state = require("modules/state")
 local walls = require("modules/walls")
 local world = require("modules/world")
@@ -51,7 +52,7 @@ local CLIMB = {
 }
 
 local SOUND = {
-    step = "lcm_fs_sneakers_concrete_run",
+    step = "lcm_fs_sneakers_concrete_sprint", -- a harder step than running: V connects to the wall
     step_interval = 0.15, -- s between footsteps on the wall
 }
 
@@ -254,5 +255,36 @@ end
 function wallclimb.stop()
     stop("turned off")
 end
+
+settings.section("wall climb", 4, CLIMB, {
+    {
+        key = "max_angle",
+        label = "max angle from head-on (deg)",
+        min = 10,
+        max = 60,
+        format = "%.0f",
+    },
+    { key = "max_dist", label = "max wall distance (m)", min = 0.6, max = 1.5 },
+    { key = "min_run_up", label = "no climb below (m/s)", min = 0, max = 4 },
+    { key = "base_run_up", label = "base run-up (m/s)", min = 1.5, max = 7 },
+    { key = "base_height", label = "height at base run-up (m)", min = 0.5, max = 3.5 },
+    { key = "extra_height", label = "extra height per m/s (m)", min = 0, max = 1 },
+    { key = "max_vz", label = "max climb speed (m/s)", min = 4, max = 15 },
+    { key = "gravity", label = "gravity on wall (m/s2)", min = 3, max = 16 },
+    { key = "run_up_time", label = "run-up memory (s)", min = 0.05, max = 1 },
+    { key = "friction", label = "sideways friction (1/s)", min = 0, max = 30 },
+    { key = "hold_dist", label = "distance to wall (m)", min = 0.4, max = 0.8 },
+    { key = "max_offset", label = "max bump depth (m)", min = 0.2, max = 2 },
+    { key = "look_ahead", label = "bump look-ahead (m)", min = 0, max = 1.5 },
+    { key = "top_push", label = "push over top (m/s)", min = 0, max = 5 },
+    { key = "top_lift", label = "lift at top (m/s)", min = 0, max = 6 },
+    {
+        key = "step_interval",
+        label = "footstep interval (s)",
+        min = 0.08,
+        max = 0.5,
+        values = SOUND,
+    },
+})
 
 return wallclimb

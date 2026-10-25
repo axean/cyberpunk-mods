@@ -24,7 +24,9 @@ Why stats, not pushing: pushing V with a `PSMImpulse` every frame on the ground 
 - Her upward speed follows the planned climb every frame, so the jump's first frames can't cut it short.
 - The climb ends when V stops rising or reaches the top (a small push over the edge), or when the game's own ledge climb takes over.
 
-Code: `init.lua` wires up the modules in `modules/` (state, world, input, walls, momentum, wallrun, wallclimb, camera).
+**Settings**: the CET overlay has a "parkour" window with sliders for nearly every tuning value (base speed, momentum, wall run, wall climb, camera), saved to `settings.txt` in the mod folder. Base speed is a multiplier on V's speed cap in every state (a stat modifier, so the dash stays intact). Wall runs and climbs use the game's sprint footstep (harder than the run step).
+
+Code: `init.lua` wires up the modules in `modules/` (state, settings, world, input, walls, speed, momentum, wallrun, wallclimb, camera).
 
 Next: the end of the climb (ledge grab, 180° turn jump), hands during the climb, impact damage (impacts are already detected and logged), edge cases (instant one-frame runs, combat, vehicles).
 

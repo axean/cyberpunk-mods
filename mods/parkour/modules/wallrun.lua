@@ -3,6 +3,7 @@
 -- little speed loss, footsteps. Ends when V falls too fast, the wall ends, or she lands; V's
 -- double jump on the wall becomes a jump away from it.
 
+local settings = require("modules/settings")
 local state = require("modules/state")
 local walls = require("modules/walls")
 local world = require("modules/world")
@@ -30,7 +31,7 @@ local RUN = {
 local SOUND = {
     enter = "lcm_wallrun_in",
     exit = "lcm_wallrun_out",
-    step = "lcm_fs_sneakers_concrete_run",
+    step = "lcm_fs_sneakers_concrete_sprint", -- a harder step than running: V connects to the wall
     step_interval = 0.28, -- s between footsteps on the wall
 }
 
@@ -138,5 +139,27 @@ function wallrun.update(player, v, delta)
         world.sound(player, SOUND.step)
     end
 end
+
+settings.section("wall run", 3, RUN, {
+    { key = "min_speed", label = "min speed (m/s)", min = 0, max = 6 },
+    { key = "max_angle", label = "max angle to wall (deg)", min = 20, max = 80, format = "%.0f" },
+    { key = "max_dist", label = "max wall distance (m)", min = 0.5, max = 1.5 },
+    { key = "lift", label = "entry lift (m/s)", min = 0, max = 9 },
+    { key = "gravity_up", label = "gravity rising (m/s2)", min = 2, max = 16 },
+    { key = "gravity_down", label = "gravity falling (m/s2)", min = 1, max = 16 },
+    { key = "exit_vz", label = "fall off below (m/s)", min = -12, max = -1 },
+    { key = "friction", label = "speed loss per s", min = 0, max = 0.5 },
+    { key = "max_time", label = "max time (s)", min = 0.5, max = 5 },
+    { key = "jump_away", label = "jump-off away (m/s)", min = 0, max = 10 },
+    { key = "jump_up", label = "jump-off up (m/s)", min = 0, max = 8 },
+    { key = "cooldown", label = "cooldown (s)", min = 0, max = 1 },
+    {
+        key = "step_interval",
+        label = "footstep interval (s)",
+        min = 0.1,
+        max = 0.6,
+        values = SOUND,
+    },
+})
 
 return wallrun

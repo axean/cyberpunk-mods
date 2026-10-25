@@ -52,3 +52,5 @@ globals:
     any: true
   RPGManager:
     any: true
+  ImGui:
+    any: true

@@ -251,3 +251,23 @@ function GetMod(name) end
 ---@param method string
 ---@param callback fun(self: any, ...: any)
 function Observe(class, method, callback) end
+
+-- CET's Dear ImGui bindings (only what our mods use).
+ImGui = {}
+---@param name string
+---@return boolean visible
+function ImGui.Begin(name) end
+function ImGui.End() end
+---@param label string
+---@param value number
+---@param min number
+---@param max number
+---@param format? string
+---@return number value, boolean changed
+function ImGui.SliderFloat(label, value, min, max, format) end
+---@param label string
+---@return boolean open
+function ImGui.CollapsingHeader(label) end
+---@param label string
+---@return boolean pressed
+function ImGui.Button(label) end

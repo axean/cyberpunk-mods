@@ -8,7 +8,9 @@
 -- tracked speed (state.carry) instead, which changes only at the rates below.
 
 local input = require("modules/input")
+local settings = require("modules/settings")
 local state = require("modules/state")
+local base_speed = require("modules/speed")
 local world = require("modules/world")
 
 local MOMENTUM = {
@@ -110,7 +112,9 @@ function momentum.update(player, v, delta)
     carry = math.min(carry, speed + MOMENTUM.lead)
     local stats = Game.GetStatsSystem()
     local id = player:GetEntityID()
-    local base = stats:GetStatValue(id, gamedataStatType.MaxSpeed) - applied.cap
+    -- the game's cap without ours; the base speed multiplier also scales our additive part
+    local factor = base_speed.factor()
+    local base = stats:GetStatValue(id, gamedataStatType.MaxSpeed) - applied.cap * factor
     if after_dash then
         after_dash = false
         if carry > base then
@@ -137,7 +141,25 @@ function momentum.update(player, v, delta)
     end
     state.carry = carry
     local accel = stats:GetStatValue(id, gamedataStatType.Acceleration) - applied.accel
-    set_stats(player, carry - base, math.min(0, MOMENTUM.turn_accel - accel))
+    set_stats(player, (carry - base) / factor, math.min(0, MOMENTUM.turn_accel - accel))
 end
+
+settings.section("momentum", 2, MOMENTUM, {
+    { key = "free_speed", label = "free speed-up to (m/s)", min = 2, max = 8 },
+    { key = "build_time", label = "sprint build-up time (s)", min = 0.1, max = 3 },
+    { key = "keep_decel", label = "fade above cap (m/s2)", min = 0.5, max = 10 },
+    { key = "dash_keep", label = "dash speed kept", min = 0, max = 1 },
+    { key = "landing_loss", label = "landing loss (m/s)", min = 0, max = 2 },
+    { key = "turn_accel", label = "ground acceleration (m/s2)", min = 5, max = 24 },
+    { key = "lead", label = "cap lead over speed (m/s)", min = 0.2, max = 3 },
+    { key = "hard_landing_vz", label = "hard landing below (m/s)", min = -25, max = -6 },
+    {
+        key = "max_input_angle",
+        label = "stick angle to keep (deg)",
+        min = 20,
+        max = 90,
+        format = "%.0f",
+    },
+})
 
 return momentum
