@@ -4,13 +4,11 @@ Generic findings on how Cyberpunk modding works. Game: Steam + Proton Experiment
 
 ## Platform policy
 
-Target PC for now, but keep mods as platform agnostic as possible:
+PC first (decided 2026-10-25). Consoles are not a goal: their mod route (mod.io, data and precompiled scripts only, CDPR approval) is too limited to develop against.
 
-- Prefer data (tweaks, archives, quest graphs, scenes) over scripts. Data mods are the likeliest to work on consoles.
-- Use redscript only where data can't do the job, and make the mod degrade gracefully if the script never runs.
-- No CET or RED4ext in published mods (native code, PC only). CET is fine as a development tool (see [`thirdparty/`](thirdparty/README.md)).
-
-We have no console to test on. Console support for redscript is unconfirmed: mod.io gets a per-platform copy of each upload, but whether consoles run the scripts is unknown.
+- Redscript and CET are fine, also in published mods. Mods that need CET can't go on mod.io; publish them on Nexus.
+- Where a mod is published is decided per mod.
+- Still prefer the simplest tool that does the job: data (archives, quest graphs) over scripts, redscript over CET.
 
 ## Mod ecosystems
 

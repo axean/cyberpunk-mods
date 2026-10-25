@@ -1,0 +1,13 @@
+# selene standard library for CET Lua mods: Lua 5.1 (LuaJIT) plus the CET and game globals our mods use.
+# Keep in sync with typings/cet/cet.lua.
+base: lua51
+name: cet
+globals:
+  Game:
+    any: true
+  GetAllBlackboardDefs:
+    args: []
+  registerForEvent:
+    args:
+      - type: string
+      - type: function

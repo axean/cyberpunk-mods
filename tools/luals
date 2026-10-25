@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Type-check all Lua in the repo with the pinned lua-language-server (settings in .luarc.json).
+# Fails if it reports anything. Install it with tools/install-lua-tools.sh.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+LUALS="$HOME/.local/opt/lua-language-server/${LUALS_VERSION:-3.19.2}/bin/lua-language-server"
+log=$(mktemp -d)
+trap 'rm -rf "$log"' EXIT
+"$LUALS" --check="$ROOT" --configpath="$ROOT/.luarc.json" --checklevel=Hint --logpath="$log" \
+    --check_format=pretty

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Run the pinned selene (Lua linter). Install it with tools/install-lua-tools.sh.
+set -euo pipefail
+exec "$HOME/.local/opt/selene/${SELENE_VERSION:-0.32.0}/selene" "$@"

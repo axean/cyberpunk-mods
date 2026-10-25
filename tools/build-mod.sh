@@ -4,7 +4,8 @@
 #
 #   build-mod.sh mods/<mod>               build
 #   build-mod.sh mods/<mod> --install     build, then copy the archive files into the game's
-#                                         archive/pc/mod/ and scripts into r6/scripts/
+#                                         archive/pc/mod/, scripts into r6/scripts/ and CET
+#                                         mods into bin/x64/plugins/cyber_engine_tweaks/mods/
 #                                         (safe while the game runs; restart to load)
 #   build-mod.sh mods/<mod> --uninstall   remove the files --install put there
 #
@@ -81,7 +82,7 @@ if [[ ${2:-} == --install ]]; then
     while read -r rel; do
         case $rel in
             archive/*) dest="archive/pc/mod/${rel#archive/}" ;;
-            r6/scripts/*) dest="$rel" ;;
+            r6/scripts/* | bin/x64/plugins/cyber_engine_tweaks/mods/*) dest="$rel" ;;
             *) continue ;;  # about.json is for mod.io only
         esac
         replace "$OUT/mod/$rel" "$GAME/$dest"
