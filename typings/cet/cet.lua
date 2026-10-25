@@ -22,6 +22,22 @@ function PlayerPuppet:GetWorldYaw() end
 function PlayerPuppet:IsAttached() end
 ---@return EntityID
 function PlayerPuppet:GetEntityID() end
+---@return FPPCameraComponent
+function PlayerPuppet:GetFPPCameraComponent() end
+
+---@class FPPCameraComponent
+local FPPCameraComponent = {}
+---@return Vector4
+function FPPCameraComponent:GetLocalPosition() end
+
+---@class CameraSystem
+local CameraSystem = {}
+---@return Vector4
+function CameraSystem:GetActiveCameraForward() end
+---@return Vector4
+function CameraSystem:GetActiveCameraRight() end
+---@return number
+function CameraSystem:GetActiveCameraFOV() end
 
 ---@class BlackboardID_Int
 
@@ -51,6 +67,8 @@ Game = {}
 function Game.GetPlayer() end
 ---@return BlackboardSystem
 function Game.GetBlackboardSystem() end
+---@return CameraSystem
+function Game.GetCameraSystem() end
 
 ---@return AllBlackboardDefinitions
 function GetAllBlackboardDefs() end
@@ -60,3 +78,8 @@ function GetAllBlackboardDefs() end
 ---@param event CetEvent
 ---@param callback fun(delta?: number)
 function registerForEvent(event, callback) end
+
+---@param id string
+---@param label string
+---@param callback fun()
+function registerHotkey(id, label, callback) end

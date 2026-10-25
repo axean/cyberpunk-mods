@@ -11,3 +11,8 @@ globals:
     args:
       - type: string
       - type: function
+  registerHotkey:
+    args:
+      - type: string
+      - type: string
+      - type: function
