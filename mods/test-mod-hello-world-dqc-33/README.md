@@ -10,7 +10,7 @@ It is a [Deceptious Quest Core](https://mod.io/g/cyberpunk-2077/m/deceptious-que
 > [!WARNING]
 > **Slot 33 is borrowed.** DQC slots belong to DQC's author, and slot 33 is unused today. It is used here for local testing only. Ask the author for a reserved slot before publishing; the mod must not go public on slot 33 without their OK.
 
-Status: built and installed locally, not yet tested in game. See [PLAN.md](PLAN.md).
+Status: works (2026-10-25), installed locally in the game's `archive/pc/mod/`. See [PLAN.md](PLAN.md).
 
 ```sh
 tools/build-mod.sh mods/test-mod-hello-world-dqc-33   # -> build/test-mod-hello-world-dqc-33/*.zip
@@ -18,7 +18,7 @@ tools/build-mod.sh mods/test-mod-hello-world-dqc-33   # -> build/test-mod-hello-
 
 ## How it hooks in
 
-DQC starts slot mods when V enters the H10 apartment. This mod implements DQC's slot interface for slot 33 with its own files:
+DQC checks each slot when V enters the H10 apartment. If the slot's mod is missing, DQC waits until V is inside the slot's trigger area, so a mod installed later starts as soon as a save loads. This mod implements DQC's slot interface for slot 33 with its own files:
 
 | Piece | Value |
 |---|---|

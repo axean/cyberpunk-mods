@@ -28,7 +28,10 @@ The message is sent once per registration. Resetting slot 33 from DQC's phone me
 
 `tools/build-mod.sh mods/test-mod-hello-world-dqc-33` gives `build/test-mod-hello-world-dqc-33/test-mod-hello-world-dqc-33.zip` (mod.io folder layout). It converts each JSON file to a game file and back, and fails if the result differs. No vanilla files needed, so it also runs in CI.
 
-## 3. Load and test
+## 3. Load and test (works)
+
+Result 2026-10-25, local route: the text arrived as soon as the save loaded (behind Viktor's), since DQC was already waiting for slot 33's trigger in that save.
+
 
 1. Local route first: copy `build/.../mod/archive/*` into the game's `archive/pc/mod/` (done 2026-10-25; delete the three files to uninstall). Unknown whether the 2.5 loader reads `.archive.json` there.
 2. In game: enter the apartment (leave and re-enter if already inside), expect a text from an unknown number: "Hello world!".
