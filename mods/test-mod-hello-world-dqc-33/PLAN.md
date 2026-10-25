@@ -38,17 +38,15 @@ Result 2026-10-25, local route: the text arrived as soon as the save loaded (beh
 3. Check with `tools/savdat.py facts <save>/sav.dat deceptious_quest_33`: `-1` means DQC found the trigger and the phase ran; `0` means the trigger (streaming block) did not load.
 4. If the local route does not load: hidden mod.io upload (step 4).
 
-## 4. GitHub workflow and mod.io (hidden)
+## 4. Release: GitHub build, manual mod.io upload
 
-Set up 2026-10-25:
+- mod.io: mod "test-mod-hello-world-dqc-33 [DQC]", visibility Hidden.
+- `.github/workflows/release-test-mod.yml`, on tags `test-mod-hello-world-v<version>`: install WolvenKit, build, attach `test-mod-hello-world-dqc-33-<version>.zip` to a GitHub Release. "Run workflow" (manual) builds without a tag and keeps the zip as a run artifact.
+- Upload that zip in the mod's file manager on mod.io and tick Windows. The file then waits for cloud cooking, the virus scan and CDPR's approval.
 
-- mod.io: mod "test-mod-hello-world-dqc-33 [DQC]", visibility Hidden. Uploads use a mod.io personal access token (read + write); the read-only API key cannot upload.
-- GitHub environment `modio`: secret `MODIO_TOKEN`, variable `MODIO_MOD_ID`. Only tags `test-mod-hello-world-v*` may use it, and each run waits for the owner's approval.
-- `.github/workflows/modio-test-mod.yml`, on tags `test-mod-hello-world-v<version>`: install WolvenKit, build, upload the zip as a new active file, version from the tag.
+The upload cannot be automated: Cyberpunk's mod.io platforms are locked, and the API only lets game admins target locked platforms. An API upload ends up with no platforms and can never go live (tried 2026-10-25). The website files the platform as a pending request instead.
 
-To release: `git tag test-mod-hello-world-v0.1.1 && git push origin test-mod-hello-world-v0.1.1`, then approve the run on GitHub. Then subscribe to the hidden mod (logged in on the website) and remove the local copy from `archive/pc/mod/`.
-
-Result 2026-10-25: `v0.1.2` uploaded (file 8375361, 5.5 KB, no platforms). The mod stays "not accepted" with no live file until CDPR's team reviews it and assigns platforms; until then it does not install in game.
+To release: `git tag test-mod-hello-world-v0.1.3 && git push origin test-mod-hello-world-v0.1.3`, then download the zip from the release.
 
 ## 5. Before going public
 
