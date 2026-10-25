@@ -5,22 +5,23 @@
 local INTERVAL = 0.25 -- seconds between lines
 local MAX_PLAUSIBLE_SPEED = 100 -- m/s; GetVelocity() sometimes returns huge nonsense values
 
--- gamePSMLocomotionStates and gamePSMHighLevel, by value
+-- Locomotion values as the game's movement states write them (locomotionTransitions.script);
+-- the decompiled gamePSMLocomotionStates enum is off by one from 4 on. 4 and 12 are unused.
 local LOCOMOTION = {
     [0] = "Default",
     [1] = "Crouch",
     [2] = "Sprint",
-    [3] = "Kereznikov",
-    [4] = "Jump",
-    [5] = "Vault",
-    [6] = "Dodge",
-    [7] = "DodgeAir",
-    [8] = "Workspot",
-    [9] = "Slide",
-    [10] = "SlideFall",
-    [11] = "CrouchSprint",
-    [12] = "CrouchDodge",
+    [3] = "Kerenzikov",
+    [5] = "Jump",
+    [6] = "Vault",
+    [7] = "Dodge",
+    [8] = "DodgeAir",
+    [9] = "Workspot",
+    [10] = "Slide",
+    [11] = "SlideFall",
+    [13] = "CrouchDodge",
 }
+-- gamePSMHighLevel
 local HIGH_LEVEL = {
     [0] = "Default",
     [1] = "SceneTier1",
