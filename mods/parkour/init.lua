@@ -1,4 +1,5 @@
--- parkour (CET): Mirror's Edge style movement for V: wall run, wall climb and momentum.
+-- parkour (CET): Mirror's Edge style movement for V: wall run, wall climb, springboard and
+-- momentum.
 -- Numbers from our Mirror's Edge captures and the research handbook (datasets/comparison.md),
 -- uu converted to metres. Each move is a module in modules/; this file wires them up.
 -- Hotkeys "parkour: wall moves on/off", "parkour: momentum on/off"; sliders in the CET overlay
@@ -8,6 +9,7 @@ local camera = require("modules/camera")
 local input = require("modules/input")
 local momentum = require("modules/momentum")
 local settings = require("modules/settings")
+local springboard = require("modules/springboard")
 local base_speed = require("modules/speed")
 local state = require("modules/state")
 local wallclimb = require("modules/wallclimb")
@@ -26,6 +28,7 @@ registerHotkey("parkour_wallrun_toggle", "parkour: wall moves on/off", function(
         elseif state.mode == "wallclimb" then
             wallclimb.stop()
         end
+        springboard.release()
     end
     world.notify("parkour: wall moves " .. (state.enabled and "on" or "off"))
 end)
@@ -63,6 +66,7 @@ registerForEvent("onShutdown", function()
     local player = Game.GetPlayer()
     if player then
         momentum.clear(player)
+        springboard.release()
         base_speed.clear(player)
     end
 end)
@@ -87,11 +91,15 @@ registerForEvent("onUpdate", function(delta)
             wallrun.update(player, v, delta)
         elseif state.mode == "wallclimb" then
             wallclimb.update(player, v, delta)
+        elseif state.mode == "springboard" then
+            springboard.update(player, v, delta)
         elseif state.enabled then
-            if not wallclimb.try_start(player, v, delta) then
+            springboard.watch(player, v, delta)
+            if state.mode == "none" and not wallclimb.try_start(player, v, delta) then
                 wallrun.try_start(player, v, delta)
             end
         end
+        state.jump_pressed = false
         momentum.update(player, v, delta)
         state.idle = state.mode == "none" and state.idle + delta or 0
     end

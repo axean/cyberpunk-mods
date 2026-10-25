@@ -20,7 +20,8 @@ CET_MOD = Path("bin/x64/plugins/cyber_engine_tweaks/mods/parkour")
 
 def main() -> None:
     out = Path(sys.argv[1])
-    text = f"parkour loaded (CET, wall run, wall climb, momentum), {devstatus.stamp(HERE)}"
+    moves = "wall run, wall climb, springboard, momentum"
+    text = f"parkour loaded (CET, {moves}), {devstatus.stamp(HERE)}"
     devstatus.write_status_mod(out, "parkour", "parkour", text)
     (out / "mod" / CET_MOD).mkdir(parents=True)
     shutil.copy(HERE / "init.lua", out / "mod" / CET_MOD)

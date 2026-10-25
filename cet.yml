@@ -54,3 +54,5 @@ globals:
     any: true
   ImGui:
     any: true
+  TweakDB:
+    any: true

@@ -59,6 +59,46 @@ function walls.scan_ahead(player, dx, dy)
     cast(player, "ahead", dx, dy, AHEAD_LEVELS)
 end
 
+---@class Obstacle
+---@field dist number m to its face along the direction
+---@field top number m its top is above V's feet
+
+-- A low obstacle ahead along the horizontal unit direction (dx, dy), within range: something
+-- at knee height whose top (found with a ray down just behind its face) is at most max_height
+-- above V's feet, with nothing at max_height + 0.2 m.
+---@param player PlayerPuppet
+---@param dx number
+---@param dy number
+---@param range number
+---@param max_height number
+---@return Obstacle?
+function walls.obstacle(player, dx, dy, range, max_height)
+    local pos = player:GetWorldPosition()
+    local knee = world.raycast(
+        world.vec(pos.x, pos.y, pos.z + 0.4),
+        world.vec(pos.x + dx * range, pos.y + dy * range, pos.z + 0.4)
+    )
+    if not knee then
+        return nil
+    end
+    local over = pos.z + max_height + 0.2
+    local reach = knee.dist + 0.5
+    if
+        world.raycast(
+            world.vec(pos.x, pos.y, over),
+            world.vec(pos.x + dx * reach, pos.y + dy * reach, over)
+        )
+    then
+        return nil -- taller than max_height: a wall
+    end
+    local bx, by = pos.x + dx * (knee.dist + 0.15), pos.y + dy * (knee.dist + 0.15)
+    local down = world.raycast(world.vec(bx, by, over), world.vec(bx, by, pos.z + 0.05))
+    if not down then
+        return nil
+    end
+    return { dist = knee.dist, top = over - down.dist - pos.z }
+end
+
 -- The hit of ray `name` if it's a wall (about vertical) within max_dist, and whether the wall
 -- is tall (the high ray hits too).
 ---@param name string

@@ -271,3 +271,15 @@ function ImGui.CollapsingHeader(label) end
 ---@param label string
 ---@return boolean pressed
 function ImGui.Button(label) end
+
+---@class TweakDBClass
+local TweakDBClass = {}
+---@param path string
+---@return any
+function TweakDBClass:GetFlat(path) end
+---@param path string
+---@param value any
+---@return boolean
+function TweakDBClass:SetFlat(path, value) end
+---@type TweakDBClass
+TweakDB = {}

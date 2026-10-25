@@ -50,6 +50,13 @@ function world.facing(player)
     return f.x / length, f.y / length
 end
 
+-- Pitch of the view in degrees, positive = looking up.
+---@return number
+function world.view_pitch()
+    local f = Game.GetCameraSystem():GetActiveCameraForward()
+    return math.deg(math.asin(math.max(-1, math.min(1, f.z))))
+end
+
 -- Closest hit of a ray over the collision groups walls and floors can be in.
 ---@param from Vector4
 ---@param to Vector4

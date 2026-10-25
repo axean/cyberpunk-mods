@@ -24,11 +24,17 @@ Why stats, not pushing: pushing V with a `PSMImpulse` every frame on the ground 
 - Her upward speed follows the planned climb every frame, so the jump's first frames can't cut it short.
 - The climb ends when V stops rising or reaches the top (a small push over the edge), or when the game's own ledge climb takes over.
 
+**Springboard, first version** (2026-10-25). Run at an obstacle 0.6–1.5 m tall (at least 4 m/s, within 1.2× the game's vault range), look up above it (at least 10°) and jump:
+- V steps off it at 9.5 m/s upward from its top (Mirror's Edge SpringBoardJumpZ), gives up 1 m/s of horizontal speed (not below 4) and hangs 0.3 s at the top.
+- While these conditions hold, the game's vault and ledge climb are held back (their TweakDB ranges set to 0).
+- Otherwise the game's vault works as usual.
+- First test: one springboard, about 4 m up; vaults happened when the view was level (−5° to +5°).
+
 **Settings**: the CET overlay has a "parkour" window with sliders for nearly every tuning value (base speed, momentum, wall run, wall climb, camera), saved to `settings.txt` in the mod folder. Base speed is a multiplier on V's speed cap in every state (a stat modifier, so the dash stays intact). Wall runs and climbs use the game's sprint footstep (harder than the run step).
 
 Code: `init.lua` wires up the modules in `modules/` (state, settings, world, input, walls, speed, momentum, wallrun, wallclimb, camera).
 
-Next: the end of the climb (ledge grab, 180° turn jump), hands during the climb, impact damage (impacts are already detected and logged), edge cases (instant one-frame runs, combat, vehicles).
+Next: test the springboard at per-frame logging (does the vault stay out of the way reliably), the end of the climb (ledge grab, 180° turn jump), hands during the climb, impact damage (impacts are already detected and logged), edge cases (instant one-frame runs, combat, vehicles).
 
 ```sh
 tools/build-mod.sh mods/parkour --install   # then "Reload all mods" in CET

@@ -7,7 +7,7 @@
 
 ---@class ParkourState
 ---@field enabled boolean wall moves on
----@field mode string "none", "wallrun" or "wallclimb"
+---@field mode string "none", "wallrun", "wallclimb" or "springboard"
 ---@field side integer wall run side: -1 left, 1 right, 0 none
 ---@field time number seconds in the current wall move
 ---@field last_exit string why the last wall move ended
@@ -20,6 +20,8 @@
 ---@field input number[] stick: right, forward (-1..1)
 ---@field sprint_button boolean sprint (or toggle sprint) button down
 ---@field idle number seconds since the last wall move ended
+---@field jump_pressed boolean jump was pressed since the springboard last looked
+---@field armed boolean a springboard would happen on jump (the game's vault is held back)
 
 ---@type ParkourState
 local state = {
@@ -37,6 +39,8 @@ local state = {
     input = { 0, 0 },
     sprint_button = false,
     idle = 0,
+    jump_pressed = false,
+    armed = false,
 }
 
 return state

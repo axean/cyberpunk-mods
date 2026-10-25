@@ -127,6 +127,7 @@ end
 ---@field impact number?
 ---@field input number[]?
 ---@field sprint_button boolean?
+---@field armed boolean?
 
 -- The parkour mod's state, if it's installed: ',"parkour":{...}' or "".
 ---@return string
@@ -157,7 +158,7 @@ local function parkour_json()
     end
     return string.format(
         ',"parkour":{"mode":"%s","side":%d,"time":%.3f,"last_exit":"%s","roll":%.2f,"pitch":%.2f,'
-            .. '"momentum":%s,"carry":%.2f,"impact":%.2f,"input":[%.2f,%.2f],"sprint_button":%s,'
+            .. '"momentum":%s,"carry":%.2f,"impact":%.2f,"input":[%.2f,%.2f],"sprint_button":%s,"armed":%s,'
             .. '"walls":{%s}}',
         state.mode or "",
         state.side or 0,
@@ -171,6 +172,7 @@ local function parkour_json()
         state.input and state.input[1] or 0,
         state.input and state.input[2] or 0,
         tostring(state.sprint_button == true),
+        tostring(state.armed == true),
         table.concat(walls, ",")
     )
 end
