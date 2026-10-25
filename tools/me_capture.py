@@ -6,9 +6,11 @@
 Reads the game's memory from outside (/proc/<pid>/mem); nothing is injected or changed. Writes
 one JSON object per line to <out>/<start time>.jsonl until the game exits or Ctrl+C.
 
-Memory layout from megem (github.com/totenhack/megem, Apache-2.0, DLL/player.h) and the
-LiveSplit autosplitter (github.com/Degaussed/Livesplit-ASL-scripts). Positions and velocities
-are in Unreal units; rotations are converted from 65536 = 360 degrees.
+Memory layout from megem (github.com/totenhack/megem, Apache-2.0, DLL/player.h), the LiveSplit
+autosplitter (github.com/Degaussed/Livesplit-ASL-scripts) and the mmultiplayer SDK
+(github.com/btbd/mmultiplayer, Client/sdk). Positions and velocities are in Unreal units
+(1 uu = 1 cm); rotations are converted from 65536 = 360 degrees. The camera is the rendered
+view (PlayerCamera.CameraCache.POV): offset from Faith's position, rotation with roll, FOV.
 """
 
 import argparse
@@ -30,8 +32,11 @@ LEVEL_BASE, LEVEL_CHAIN = 0x01BF8B20, (0x3CC,)
 
 FLOATS = {"pos": (0xE8, 0xEC, 0xF0), "vel": (0x100, 0x104, 0x108)}
 ROTATION = (0xF4, 0xF8, 0xFC)  # pitch, yaw, roll
-BYTES = {"move": 0x4FE, "walk": 0x503, "action": 0x505, "wallrun": 0x2A0, "wall": 0x2A8}
-HEALTH = 0x2B8
+BYTES = {"move": 0x4FE, "walk": 0x503, "action": 0x505}  # move: TdPawn.EMovement
+HEALTH = 0x2B8  # Pawn.Health, int
+CONTROLLER = 0x1CC  # Pawn.Controller
+PLAYER_CAMERA = 0x2D0  # PlayerController.PlayerCamera
+CAMERA_POV = 0x4D0 + 0x4  # Camera.CameraCache.POV: Location, Rotation, FOV
 
 
 def find_pid() -> int:
@@ -91,7 +96,12 @@ class Game:
         row["rot"] = [round(pitch, 1), round(yaw, 1), round(roll, 1)]
         for name, offset in BYTES.items():
             row[name] = self.read(p + offset, 1)[0]
-        row["health"] = round(self.f32(p + HEALTH), 1)
+        row["health"] = struct.unpack("<i", self.read(p + HEALTH, 4))[0]
+        pov = self.u32(self.u32(p + CONTROLLER) + PLAYER_CAMERA) + CAMERA_POV
+        cam = [self.f32(pov + o) for o in (0, 4, 8)]
+        row["cam_off"] = [round(c - q, 1) for c, q in zip(cam, row["pos"], strict=True)]
+        row["cam_rot"] = [round(degrees(self.u32(pov + o)), 2) for o in (0xC, 0x10, 0x14)]
+        row["fov"] = round(self.f32(pov + 0x18), 2)
         return row
 
 
