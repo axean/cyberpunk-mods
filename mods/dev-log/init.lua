@@ -121,6 +121,7 @@ end
 ---@field time number?
 ---@field last_exit string?
 ---@field roll number?
+---@field pitch number?
 ---@field momentum boolean?
 ---@field carry number?
 ---@field impact number?
@@ -138,7 +139,7 @@ local function parkour_json()
     local state = mod.state --[[@as ParkourStateView]]
     ---@type string[]
     local walls = {}
-    for _, key in ipairs({ "left", "right", "left_high", "right_high" }) do
+    for _, key in ipairs({ "left", "right", "left_high", "right_high", "ahead", "ahead_high" }) do
         local hit = state.walls and state.walls[key]
         if hit then
             local n = hit.normal
@@ -147,7 +148,7 @@ local function parkour_json()
         end
     end
     return string.format(
-        ',"parkour":{"mode":"%s","side":%d,"time":%.3f,"last_exit":"%s","roll":%.2f,'
+        ',"parkour":{"mode":"%s","side":%d,"time":%.3f,"last_exit":"%s","roll":%.2f,"pitch":%.2f,'
             .. '"momentum":%s,"carry":%.2f,"impact":%.2f,"input":[%.2f,%.2f],"sprint_button":%s,'
             .. '"walls":{%s}}',
         state.mode or "",
@@ -155,6 +156,7 @@ local function parkour_json()
         state.time or 0,
         state.last_exit or "",
         state.roll or 0,
+        state.pitch or 0,
         tostring(state.momentum == true),
         state.carry or 0,
         state.impact or 0,

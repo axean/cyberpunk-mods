@@ -16,10 +16,18 @@ In the air and in other moves the game's own stats apply. Test race (~130 m, sam
 
 Why stats, not pushing: pushing V with a `PSMImpulse` every frame on the ground suppressed the dash's own boost (dash peak 16–23 instead of 31–42 m/s). The game's movement values per state are in TweakDB `PlayerLocomotion.player_locomotion_data_<state>`: sprint cap 7.5, jog 3.5, air 4.5 (braking 1.3), landing 4.5 (braking 24).
 
-Next: impact damage (impacts are already detected and logged), wall climb, edge cases (instant one-frame runs, combat, vehicles).
+**Wall climb, first version** (2026-10-25). Jump at a tall wall head-on (facing within 33° of it) with the stick forward:
+- V is pulled tight against the wall and climbs with gravity 9 m/s².
+- The height comes from the run-up speed, shaped like Faith's climbs: nothing from a standstill, 1.8 m at 3.5 m/s, 2.9 m at a full sprint, up to 4.5 m after a dash.
+- The view pitches up 25°.
+- The climb ends when V stops rising or reaches the top (a small push over the edge), or when the game's own ledge climb takes over.
+
+Code: `init.lua` wires up the modules in `modules/` (state, world, input, walls, momentum, wallrun, wallclimb, camera).
+
+Next: the end of the climb (ledge grab, 180° turn jump), hands during the climb, impact damage (impacts are already detected and logged), edge cases (instant one-frame runs, combat, vehicles).
 
 ```sh
 tools/build-mod.sh mods/parkour --install   # then "Reload all mods" in CET
 ```
 
-Hotkeys (CET Bindings): "parkour: wall run on/off", "parkour: momentum on/off" (default on, show an on-screen message). `dev-log` logs the mod's state (`parkour` field).
+Hotkeys (CET Bindings): "parkour: wall moves on/off", "parkour: momentum on/off" (default on, show an on-screen message). `dev-log` logs the mod's state (`parkour` field).
