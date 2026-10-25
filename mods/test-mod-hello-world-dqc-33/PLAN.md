@@ -44,7 +44,7 @@ Set up 2026-10-25:
 
 - mod.io: mod "test-mod-hello-world-dqc-33 [DQC]", visibility Hidden. Uploads use a mod.io personal access token (read + write); the read-only API key cannot upload.
 - GitHub environment `modio`: secret `MODIO_TOKEN`, variable `MODIO_MOD_ID`. Only tags `test-mod-hello-world-v*` may use it, and each run waits for the owner's approval.
-- `.github/workflows/modio-test-mod.yml`, on tags `test-mod-hello-world-v<version>`: install WolvenKit, build, upload the zip as a new active file (`platforms[]=windows`), version from the tag.
+- `.github/workflows/modio-test-mod.yml`, on tags `test-mod-hello-world-v<version>`: install WolvenKit, build, upload the zip as a new active file, version from the tag.
 
 To release: `git tag test-mod-hello-world-v0.1.1 && git push origin test-mod-hello-world-v0.1.1`, then approve the run on GitHub. Then subscribe to the hidden mod (logged in on the website) and remove the local copy from `archive/pc/mod/`.
 

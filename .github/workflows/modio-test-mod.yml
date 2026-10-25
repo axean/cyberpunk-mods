@@ -38,7 +38,6 @@ jobs:
             -F "version=$version" \
             -F "changelog=Built from ${GITHUB_SHA::7} by GitHub Actions." \
             -F "active=true" \
-            -F "platforms[]=windows" \
             "https://g-5784.modapi.io/v1/games/5784/mods/$MODIO_MOD_ID/files" \
             || { jq '.error' response.json; exit 1; }
           jq '{id, version, filesize, virus_status, platforms}' response.json
