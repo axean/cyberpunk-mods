@@ -6,7 +6,9 @@ Cropped with `tools/devlog.py crop`: standstill lines are removed (so `t` has ga
 
 | File | Lines | Contents |
 |---|---|---|
-| `20261025-172125.jsonl` | 18,606 | Marked test moves on rooftops in Watson: standing jumps, sprints from standstill, slides, vaults, dodges, double/charge jumps, landings from ~3.5 m, fast mouse turns. V has upgraded legs |
+| `20261025-172125.jsonl` | 18,606 | Marked test moves on rooftops in Watson: standing jumps, sprints from standstill, slides, vaults, dodges, double/charge jumps, landings from ~3.5 m, fast mouse turns. V is the Phantom Liberty quick-start character (see below) |
+
+**Not a stock V:** the save is the Phantom Liberty quick-start character (level 15, preset attributes, perks and cyberware, incl. upgraded legs). Jump, double/charge jump, dodge and possibly sprint and slide numbers reflect that build. Gravity and the camera don't depend on it.
 
 Marks (the F8 hotkey) group the moves:
 

@@ -1,6 +1,6 @@
 # Mirror's Edge vs Cyberpunk 2077: movement
 
-Measured from our captures ([Mirror's Edge](mirrors-edge/README.md), [Cyberpunk](cyberpunk/README.md)), 2026-10-25, in metres. Mirror's Edge values marked † are from the [parkour-game research handbook](https://github.com/dragon-fish/parkour-game/tree/main/docs/mirrors-edge-deep-research) and agree with our captures. In Cyberpunk, V has upgraded legs.
+Measured from our captures ([Mirror's Edge](mirrors-edge/README.md), [Cyberpunk](cyberpunk/README.md)), 2026-10-25, in metres. Mirror's Edge values marked † are from the [parkour-game research handbook](https://github.com/dragon-fish/parkour-game/tree/main/docs/mirrors-edge-deep-research) and agree with our captures. In Cyberpunk, V is the Phantom Liberty quick-start character (level 15, preset perks and cyberware, incl. upgraded legs), so jump, dodge and possibly sprint and slide numbers are not a stock V's; gravity and camera are unaffected.
 
 | | Mirror's Edge | Cyberpunk 2077 | Difference |
 |---|---|---|---|
