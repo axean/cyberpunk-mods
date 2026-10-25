@@ -1,0 +1,44 @@
+# Build test-mod-hello-world-dqc-33 and upload it to its hidden mod.io page.
+# Runs on tags test-mod-hello-world-v<version>; the `modio` environment holds the token
+# and waits for approval before the job starts.
+name: modio test mod
+
+on:
+  push:
+    tags: ["test-mod-hello-world-v*"]
+
+permissions:
+  contents: read
+
+concurrency: modio-test-mod
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    environment: modio
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Install WolvenKit
+        run: tools/install-wolvenkit.sh
+
+      - name: Build
+        run: tools/build-mod.sh mods/test-mod-hello-world-dqc-33
+
+      - name: Upload to mod.io
+        env:
+          MODIO_TOKEN: ${{ secrets.MODIO_TOKEN }}
+          MODIO_MOD_ID: ${{ vars.MODIO_MOD_ID }}
+        run: |
+          version="${GITHUB_REF_NAME#test-mod-hello-world-v}"
+          curl -sS --fail-with-body -o response.json \
+            -H "Authorization: Bearer $MODIO_TOKEN" -H "Accept: application/json" \
+            -F "filedata=@build/test-mod-hello-world-dqc-33/test-mod-hello-world-dqc-33.zip" \
+            -F "version=$version" \
+            -F "changelog=Built from ${GITHUB_SHA::7} by GitHub Actions." \
+            -F "active=true" \
+            -F "platforms[]=windows" \
+            "https://api.mod.io/v1/games/5784/mods/$MODIO_MOD_ID/files" \
+            || { jq '.error' response.json; exit 1; }
+          jq '{id, version, filesize, virus_status, platforms}' response.json

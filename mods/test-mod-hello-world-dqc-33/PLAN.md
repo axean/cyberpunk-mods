@@ -40,16 +40,15 @@ Result 2026-10-25, local route: the text arrived as soon as the save loaded (beh
 
 ## 4. GitHub workflow and mod.io (hidden)
 
-1. Create the mod by hand on mod.io: name, logo, description with the disclaimer, visibility **Hidden**. Note the mod id.
-2. Create a mod.io **OAuth access token with write scope** (account settings, API access). The read-only API key cannot upload.
-3. Store it as GitHub Actions secret `MODIO_TOKEN` in a protected environment `modio`; mod id as variable `MODIO_MOD_ID`.
-4. Workflow `.github/workflows/modio-test-mod.yml`, on tags `test-mod-hello-world-v*`:
-   - install WolvenKit via `tools/install-wolvenkit.sh`
-   - build with `tools/build-mod.sh`
-   - upload: `POST https://api.mod.io/v1/games/5784/mods/$MODIO_MOD_ID/files` with `filedata`, `version`, `changelog`, `active=true` and `platforms[]` (`windows` first)
-5. Subscribe to the hidden mod in game (or on the website) and test as in step 3.
+Set up 2026-10-25:
 
-Never print the token. Uploads may land as pending if mod.io or CDPR moderates files.
+- mod.io: mod "test-mod-hello-world-dqc-33 [DQC]", visibility Hidden. Uploads use a mod.io personal access token (read + write); the read-only API key cannot upload.
+- GitHub environment `modio`: secret `MODIO_TOKEN`, variable `MODIO_MOD_ID`. Only tags `test-mod-hello-world-v*` may use it, and each run waits for the owner's approval.
+- `.github/workflows/modio-test-mod.yml`, on tags `test-mod-hello-world-v<version>`: install WolvenKit, build, upload the zip as a new active file (`platforms[]=windows`), version from the tag.
+
+To release: `git tag test-mod-hello-world-v0.1.1 && git push origin test-mod-hello-world-v0.1.1`, then approve the run on GitHub. Then subscribe to the hidden mod (logged in on the website) and remove the local copy from `archive/pc/mod/`.
+
+Uploads may land as pending if mod.io or CDPR moderates files.
 
 ## 5. Before going public
 
