@@ -1,7 +1,7 @@
 [project]
-name = "cyberpunk-mods"
+name = "modding-tools"
 version = "0.1.0"
-description = "Cyberpunk 2077 mods and tools for studying how modding works."
+description = "Game modding tools and notes: Cyberpunk 2077 mods, Mirror's Edge as parkour reference."
 readme = "README.md"
 authors = [{ name = "Axel E. Andersson" }]
 requires-python = ">=3.12"
