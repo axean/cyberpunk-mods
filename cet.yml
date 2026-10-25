@@ -18,3 +18,17 @@ globals:
       - type: function
   Transform:
     any: true
+  registerInput:
+    args:
+      - type: string
+      - type: string
+      - type: function
+  GetMod:
+    args:
+      - type: string
+  Vector4:
+    any: true
+  Quaternion:
+    any: true
+  PSMImpulse:
+    any: true

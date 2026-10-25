@@ -1,7 +1,8 @@
 -- dev-log (CET): writes V's movement and camera to dev_log.jsonl in this mod's folder, one JSON
 -- object per line, so it can be read while playing. 4 lines per second, or every frame after
 -- the "per-frame" hotkey. The "mark" hotkey writes a numbered marker line (e.g. before a test
--- move). The file starts fresh each time the game starts or CET reloads mods.
+-- move). If the parkour mod is installed, its state is logged too. The file starts fresh each
+-- time the game starts or CET reloads mods.
 
 local INTERVAL = 0.25 -- seconds between lines, unless per-frame
 local MAX_PLAUSIBLE_SPEED = 100 -- m/s; GetVelocity() sometimes returns huge nonsense values
@@ -108,6 +109,43 @@ local function camera_json(player)
     )
 end
 
+---@class ParkourWallView
+---@field dist number
+---@field normal number[]
+
+-- What dev-log reads from the parkour mod (its Parkour.state).
+---@class ParkourStateView
+---@field walls table<string, ParkourWallView>?
+---@field hover boolean?
+---@field roll number?
+
+-- The parkour mod's state, if it's installed: ',"parkour":{...}' or "".
+---@return string
+local function parkour_json()
+    local ok, mod = pcall(GetMod, "parkour")
+    ---@cast mod { state: ParkourStateView? }?
+    if not ok or type(mod) ~= "table" or type(mod.state) ~= "table" then
+        return ""
+    end
+    local state = mod.state --[[@as ParkourStateView]]
+    ---@type string[]
+    local walls = {}
+    for _, key in ipairs({ "left", "right", "left_high", "right_high" }) do
+        local hit = state.walls and state.walls[key]
+        if hit then
+            local n = hit.normal
+            walls[#walls + 1] =
+                string.format('"%s":[%.3f,%.3f,%.3f,%.3f]', key, hit.dist, n[1], n[2], n[3])
+        end
+    end
+    return string.format(
+        ',"parkour":{"hover":%s,"roll":%.2f,"walls":{%s}}',
+        tostring(state.hover == true),
+        tonumber(state.roll) or 0,
+        table.concat(walls, ",")
+    )
+end
+
 ---@param player PlayerPuppet
 ---@return string
 local function line(player)
@@ -136,7 +174,7 @@ local function line(player)
     end
     return string.format(
         '{"t":%.3f,"pos":%s,"speed":%.2f,"speed_h":%.2f,"vel":%s,"yaw":%.1f,'
-            .. '"locomotion":"%s","high_level":"%s",%s}\n',
+            .. '"locomotion":"%s","high_level":"%s",%s%s}\n',
         time,
         vec3(pos),
         speed,
@@ -145,7 +183,8 @@ local function line(player)
         player:GetWorldYaw(),
         loco_name,
         high_name,
-        cam
+        cam,
+        parkour_json()
     )
 end
 

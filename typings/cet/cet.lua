@@ -7,6 +7,47 @@
 ---@field y number
 ---@field z number
 ---@field w number
+Vector4 = {}
+---@param x number
+---@param y number
+---@param z number
+---@param w number
+---@return Vector4
+function Vector4.new(x, y, z, w) end
+
+---@class Quaternion
+---@field i number
+---@field j number
+---@field k number
+---@field r number
+Quaternion = {}
+---@param i number
+---@param j number
+---@param k number
+---@param r number
+---@return Quaternion
+function Quaternion.new(i, j, k, r) end
+
+---@class PSMImpulse
+---@field id string
+---@field impulse Vector4
+PSMImpulse = {}
+---@return PSMImpulse
+function PSMImpulse.new() end
+
+---@class TraceResult
+---@field position Vector4
+---@field normal Vector4
+
+---@class SpatialQueriesSystem
+local SpatialQueriesSystem = {}
+---@param from Vector4
+---@param to Vector4
+---@param group string collision group, e.g. "Static"
+---@param static boolean static objects only
+---@param dynamic boolean dynamic objects only
+---@return boolean hit, TraceResult result
+function SpatialQueriesSystem:SyncRaycastByCollisionGroup(from, to, group, static, dynamic) end
 
 ---@class EntityID
 
@@ -16,6 +57,10 @@ local PlayerPuppet = {}
 function PlayerPuppet:GetWorldPosition() end
 ---@return Vector4
 function PlayerPuppet:GetVelocity() end
+---@return Vector4
+function PlayerPuppet:GetWorldForward() end
+---@param event PSMImpulse
+function PlayerPuppet:QueueEvent(event) end
 ---@return number
 function PlayerPuppet:GetWorldYaw() end
 ---@return boolean
@@ -29,6 +74,10 @@ function PlayerPuppet:GetFPPCameraComponent() end
 local FPPCameraComponent = {}
 ---@return Vector4
 function FPPCameraComponent:GetLocalPosition() end
+---@param rot Quaternion
+function FPPCameraComponent:SetLocalOrientation(rot) end
+---@param pos Vector4
+function FPPCameraComponent:SetLocalPosition(pos) end
 
 ---@class CameraSystem
 local CameraSystem = {}
@@ -79,6 +128,8 @@ function Game.GetPlayer() end
 function Game.GetBlackboardSystem() end
 ---@return CameraSystem
 function Game.GetCameraSystem() end
+---@return SpatialQueriesSystem
+function Game.GetSpatialQueriesSystem() end
 
 ---@return AllBlackboardDefinitions
 function GetAllBlackboardDefs() end
@@ -93,3 +144,12 @@ function registerForEvent(event, callback) end
 ---@param label string
 ---@param callback fun()
 function registerHotkey(id, label, callback) end
+
+---@param id string
+---@param label string
+---@param callback fun(down: boolean)
+function registerInput(id, label, callback) end
+
+---@param name string
+---@return any
+function GetMod(name) end
