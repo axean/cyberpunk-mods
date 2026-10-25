@@ -21,6 +21,7 @@ Cyberpunk 2077 mods, and notes on how modding works. Long-term goal: questline m
 
 - `NOTES.md`: findings on how modding works
 - `TOOLS.md`: external modding tools (WolvenKit, Graphviz, ...)
+- [`REFERENCES.md`](REFERENCES.md): external repos and pages worth knowing (Cyberpunk mod sources, Mirror's Edge parkour)
 - [`tools/`](tools/README.md): our scripts and how to use them
 - [`thirdparty/`](thirdparty/README.md): other authors' mods we use (links and checksums only)
 - `mods/`: our own mods ([`test-mod-hello-world-dqc-33`](mods/test-mod-hello-world-dqc-33/README.md): DQC slot test; [`dev-status`](mods/dev-status/README.md): texts which dev mods are loaded; [`hello-night-city-billboards`](mods/hello-night-city-billboards/README.md): billboard text; [`dev-log`](mods/dev-log/README.md): live movement log, CET)
