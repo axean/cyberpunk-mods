@@ -3,3 +3,4 @@ snapshots/*
 dissected/
 .venv/
 __pycache__/
+build/

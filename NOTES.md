@@ -75,6 +75,9 @@ Decoded by `tools/savdat.py`, checked against the facts listed in `metadata.9.js
 - The Nexus frameworks (RED4ext and its plugins ArchiveXL, TweakXL, Codeware) broke with 2.5; only unofficial fixes existed at launch. Native code is outside the mod.io path anyway.
 - Redscript runs on 2.5 via mod.io (PC, Proton). A mod's `.script` wraps an elevator method and sets facts; after an elevator ride those facts appeared in the save, and no quest or scene file writes them.
 - Data-only mods can do a lot through quest scenes: `questInputAction_ConditionType` reads stick and button input (e.g. "player is idle"), `questInventory_ConditionType` + `questAddRemoveItem` check and consume items, and scenes can play vanilla player animations with vanilla props attached.
+- WolvenKit CLI 10.0.0-beta.1 converts game files to JSON and back byte-identically (tested on a `.questphase` and a `.streamingsector`), so mods can be written as JSON (or generated) and converted at build time. `convert deserialize` writes its output flat, without the input's folders.
+- Quest graphs in WolvenKit JSON: sockets and connections are shared objects (`HandleId` on first use, `HandleRefId` after), so each connection appears in both its source and destination socket. Journal nodes have `Active`/`Inactive` inputs; journal paths use `fileEntryIndex: 1` everywhere, vanilla and mods.
+- A mod's journal can add a conversation under a vanilla contact by using a folder with the contact's path as id (e.g. `contacts/unknown`); entries merge by id.
 - mod.io tags some mods "Available on Consoles". Mods that ship scripts seem not to carry it; not confirmed.
 
 ## Existing frameworks
