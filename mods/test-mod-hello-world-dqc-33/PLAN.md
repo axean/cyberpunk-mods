@@ -48,7 +48,7 @@ Set up 2026-10-25:
 
 To release: `git tag test-mod-hello-world-v0.1.1 && git push origin test-mod-hello-world-v0.1.1`, then approve the run on GitHub. Then subscribe to the hidden mod (logged in on the website) and remove the local copy from `archive/pc/mod/`.
 
-Uploads may land as pending if mod.io or CDPR moderates files.
+Result 2026-10-25: `v0.1.2` uploaded (file 8375361, 5.5 KB, no platforms). The mod stays "not accepted" with no live file until CDPR's team reviews it and assigns platforms; until then it does not install in game.
 
 ## 5. Before going public
 
