@@ -27,3 +27,13 @@ Loads through `bin/x64/version.dll` (Ultimate ASI Loader), which loads `bin/x64/
 > ```
 >
 > Full line we use: see [Game setup](../README.md#game-setup). On the first start with CET, it asks for a key to open its overlay.
+
+> [!IMPORTANT]
+> **Also required: Visual C++ runtime 14.40 or newer in the game's Proton prefix.** The prefix came with 14.28 (2020), and CET 1.38 crashed while loading ("ASI Loader: Unable to load cyber_engine_tweaks.asi. Error: 998", an access violation in `MSVCP140.dll`). Fix, with the game closed (needs `protontricks`, e.g. `sudo apt install protontricks`):
+>
+> ```sh
+> curl -fsSL -o vc_redist.x64.exe https://aka.ms/vs/17/release/vc_redist.x64.exe   # Microsoft, 14.44.35211
+> protontricks -c "wine $PWD/vc_redist.x64.exe /install /quiet /norestart" 1091500
+> ```
+>
+> `protontricks 1091500 vcrun2022` would be simpler, but its winetricks (20250102) stops at Proton Experimental's startup messages ("returned empty string").

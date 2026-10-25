@@ -47,4 +47,6 @@ WINEDLLOVERRIDES="version=n,b" PROTON_LOG=1 %command% --launcher-skip -skipStart
 | `--launcher-skip` | skips CDPR's launcher |
 | `-skipStartScreen` | skips the "press any key" screen |
 
+CET also needs a current Visual C++ runtime in the game's Proton prefix; see [`thirdparty/`](thirdparty/README.md#cyber-engine-tweaks).
+
 Our sideloads also need redscript in the game dir (`tools/install-redscript.sh`), and third-party mods are installed with `tools/thirdparty.sh` (see [`thirdparty/`](thirdparty/README.md)).
