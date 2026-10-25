@@ -17,8 +17,13 @@ tools/thirdparty.sh uninstall cet
 
 Development tool: Lua scripting with in-game reload of Lua mods, a console, a log file, and TweakDB edits at runtime. Native code, PC only, and tied to the game version (a new CET is needed after every game patch). Our published mods do not depend on it.
 
-Loads through `bin/x64/version.dll` (Ultimate ASI Loader), which loads `bin/x64/plugins/cyber_engine_tweaks.asi`. Under Proton, Wine's own `version.dll` wins unless overridden, so the Steam launch options need:
+Loads through `bin/x64/version.dll` (Ultimate ASI Loader), which loads `bin/x64/plugins/cyber_engine_tweaks.asi`.
 
-```
-WINEDLLOVERRIDES="version=n,b" PROTON_LOG=1 %command% --launcher-skip -skipStartScreen
-```
+> [!IMPORTANT]
+> **Required on Linux (Proton):** Wine uses its own built-in `version.dll` unless told otherwise, so CET does not load without this in the game's Steam launch options:
+>
+> ```
+> WINEDLLOVERRIDES="version=n,b" %command%
+> ```
+>
+> Full line we use: see [Game setup](../README.md#game-setup). On the first start with CET, it asks for a key to open its overlay.

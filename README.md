@@ -31,3 +31,20 @@ Cyberpunk 2077 mods, and notes on how modding works. Long-term goal: questline m
 uv sync
 uv run pre-commit install
 ```
+
+## Game setup
+
+Steam → Cyberpunk 2077 → Properties → General → Launch Options:
+
+```
+WINEDLLOVERRIDES="version=n,b" PROTON_LOG=1 %command% --launcher-skip -skipStartScreen
+```
+
+| Option | Why |
+|---|---|
+| `WINEDLLOVERRIDES="version=n,b"` | **Required for CET** under Proton: use the game folder's `version.dll` (CET's loader) instead of Wine's |
+| `PROTON_LOG=1` | Proton writes `~/steam-1091500.log`, which shows why the game fails to start |
+| `--launcher-skip` | skips CDPR's launcher |
+| `-skipStartScreen` | skips the "press any key" screen |
+
+Our sideloads also need redscript in the game dir (`tools/install-redscript.sh`), and third-party mods are installed with `tools/thirdparty.sh` (see [`thirdparty/`](thirdparty/README.md)).
