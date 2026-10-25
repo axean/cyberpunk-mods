@@ -75,6 +75,24 @@ function PlayerPuppet:IsAttached() end
 function PlayerPuppet:GetEntityID() end
 ---@return FPPCameraComponent
 function PlayerPuppet:GetFPPCameraComponent() end
+---@param listener PlayerPuppet
+function PlayerPuppet:RegisterInputListener(listener) end
+
+---@class CName
+
+---@class ListenerAction
+local ListenerAction = {}
+---@return CName
+function ListenerAction:GetName() end
+---@return number
+function ListenerAction:GetValue() end
+---@return InputActionType
+function ListenerAction:GetType() end
+
+---@class InputActionType
+-- gameinputActionType values
+---@type { BUTTON_PRESSED: InputActionType, BUTTON_RELEASED: InputActionType }
+gameinputActionType = {}
 
 ---@class FPPCameraComponent
 local FPPCameraComponent = {}
@@ -163,6 +181,47 @@ function Game.GetBlackboardSystem() end
 function Game.GetCameraSystem() end
 ---@return SpatialQueriesSystem
 function Game.GetSpatialQueriesSystem() end
+---@return StatsSystem
+function Game.GetStatsSystem() end
+---@param name CName
+---@return string
+function Game.NameToString(name) end
+
+---@class StatType
+
+-- gamedataStatType values (the game enum; CET exposes it as a table)
+---@type { MaxSpeed: StatType, Acceleration: StatType, Deceleration: StatType }
+gamedataStatType = {}
+
+---@class StatModifierType
+-- gameStatModifierType values
+---@type { Additive: StatModifierType, Multiplier: StatModifierType }
+gameStatModifierType = {}
+
+---@class gameStatModifierData
+
+RPGManager = {}
+---@param stat StatType
+---@param kind StatModifierType
+---@param value number
+---@return gameStatModifierData
+function RPGManager.CreateStatModifier(stat, kind, value) end
+
+-- Takes a StatsObjectID in the game; CET converts an EntityID.
+---@class StatsSystem
+local StatsSystem = {}
+---@param id EntityID
+---@param stat StatType
+---@return number
+function StatsSystem:GetStatValue(id, stat) end
+---@param id EntityID
+---@param modifier gameStatModifierData
+---@return boolean
+function StatsSystem:AddModifier(id, modifier) end
+---@param id EntityID
+---@param modifier gameStatModifierData
+---@return boolean
+function StatsSystem:RemoveModifier(id, modifier) end
 
 ---@return AllBlackboardDefinitions
 function GetAllBlackboardDefs() end
@@ -186,3 +245,9 @@ function registerInput(id, label, callback) end
 ---@param name string
 ---@return any
 function GetMod(name) end
+
+-- Runs callback(self, ...args) after the game calls class.method.
+---@param class string
+---@param method string
+---@param callback fun(self: any, ...: any)
+function Observe(class, method, callback) end

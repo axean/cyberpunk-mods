@@ -121,6 +121,11 @@ end
 ---@field time number?
 ---@field last_exit string?
 ---@field roll number?
+---@field momentum boolean?
+---@field carry number?
+---@field impact number?
+---@field input number[]?
+---@field sprint_button boolean?
 
 -- The parkour mod's state, if it's installed: ',"parkour":{...}' or "".
 ---@return string
@@ -142,14 +147,40 @@ local function parkour_json()
         end
     end
     return string.format(
-        ',"parkour":{"mode":"%s","side":%d,"time":%.3f,"last_exit":"%s","roll":%.2f,"walls":{%s}}',
+        ',"parkour":{"mode":"%s","side":%d,"time":%.3f,"last_exit":"%s","roll":%.2f,'
+            .. '"momentum":%s,"carry":%.2f,"impact":%.2f,"input":[%.2f,%.2f],"sprint_button":%s,'
+            .. '"walls":{%s}}',
         state.mode or "",
         state.side or 0,
         state.time or 0,
         state.last_exit or "",
         state.roll or 0,
+        tostring(state.momentum == true),
+        state.carry or 0,
+        state.impact or 0,
+        state.input and state.input[1] or 0,
+        state.input and state.input[2] or 0,
+        tostring(state.sprint_button == true),
         table.concat(walls, ",")
     )
+end
+
+-- V's movement stats as the game applies them now: ',"stats":[max speed, acceleration,
+-- deceleration]' or "".
+---@param player PlayerPuppet
+---@return string
+local function stats_json(player)
+    local stats = Game.GetStatsSystem()
+    local id = player:GetEntityID()
+    local ok, max_speed, accel, decel = pcall(function()
+        return stats:GetStatValue(id, gamedataStatType.MaxSpeed),
+            stats:GetStatValue(id, gamedataStatType.Acceleration),
+            stats:GetStatValue(id, gamedataStatType.Deceleration)
+    end)
+    if not ok then
+        return ""
+    end
+    return string.format(',"stats":[%.2f,%.2f,%.2f]', max_speed, accel, decel)
 end
 
 ---@param player PlayerPuppet
@@ -180,7 +211,7 @@ local function line(player)
     end
     return string.format(
         '{"t":%.3f,"pos":%s,"speed":%.2f,"speed_h":%.2f,"vel":%s,"yaw":%.1f,'
-            .. '"locomotion":"%s","high_level":"%s",%s%s}\n',
+            .. '"locomotion":"%s","high_level":"%s",%s%s%s}\n',
         time,
         vec3(pos),
         speed,
@@ -190,6 +221,7 @@ local function line(player)
         loco_name,
         high_name,
         cam,
+        stats_json(player),
         parkour_json()
     )
 end

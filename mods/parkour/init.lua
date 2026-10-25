@@ -1,11 +1,14 @@
--- parkour (CET): Mirror's Edge style movement. Milestone 1: the wall run sticks.
+-- parkour (CET): Mirror's Edge style movement: the wall run, and momentum.
 --
 -- Jump next to a tall wall while moving along it and V runs along the wall: lifted on entry,
 -- then lower gravity (rising 8.2, falling 5.0 m/s² instead of 16), a little speed loss, the
 -- view tilted away from the wall, footsteps. Ends when V falls too fast, the wall ends, or V
 -- lands; V's double jump on the wall becomes a jump away from it.
+-- Momentum: on the ground the mod moves the game's own speed cap and acceleration for V (stat
+-- modifiers, no pushing, so the game's dash and jump boosts stay intact): she gets into a sprint
+-- over a moment, keeps her speed through landings and after a dash, and turns wider at speed.
 -- Numbers from our Mirror's Edge captures (datasets/comparison.md), uu converted to metres.
--- Hotkey "parkour: wall run on/off". dev-log logs Parkour.state.
+-- Hotkeys "parkour: wall run on/off", "parkour: momentum on/off". dev-log logs Parkour.state.
 
 local GRAVITY = 16 -- m/s², the game's defaultGravity
 
@@ -51,9 +54,28 @@ local CAMERA = {
     eye_lift = 0.1, -- m while on the wall
 }
 
+-- The game caps V's speed per movement state (PlayerLocomotion.player_locomotion_data_<state>):
+-- sprint 7.5, jog 3.5, in the air 4.5 but braking only 1.3 m/s², landing 4.5 braking 24. So
+-- V keeps her speed through a jump and loses it at touchdown. The mod sets her cap to the
+-- tracked speed ("carry") instead, which changes only at the rates below.
+local MOMENTUM = {
+    free_speed = 4.0, -- m/s, up to this V speeds up as the game lets her (walking, jogging)
+    build_time = 1.0, -- s, above free_speed the cap approaches the sprint at this time constant
+    lead = 1.0, -- m/s, most the cap may be above V's actual speed (when she slows, it follows)
+    landing_loss = 0.65, -- m/s lost per landing (Mirror's Edge LandingSpeedReduction, 65 uu/s)
+    keep_decel = 3.0, -- m/s², speed above the game's cap fades this fast while the stick points on
+    dash_keep = 0.8, -- share of a dash's speed above the cap that is carried on after it
+    turn_accel = 15, -- m/s², V's acceleration on the ground (game: 24); turns at speed are wider
+    impact_drop = 4.0, -- m/s lost from one frame to the next: she hit something (logged)
+    settle_time = 0.3, -- s after a dash, jump etc. before a speed drop counts as an impact
+    hard_landing_vz = -13, -- m/s, landing faster than this keeps nothing (Mirror's Edge: 5.3 m)
+    min_input = 0.5, -- stick deflection that counts as moving on
+    max_input_angle = 60, -- degrees between the stick direction and V's movement to keep speed
+}
+
 local GROUND_PROBE = 0.15 -- m below the feet that counts as standing on something
 local MAX_PLAUSIBLE_SPEED = 100 -- m/s; GetVelocity() sometimes returns nonsense
-local JUMP = 5 -- locomotion state value the game writes for all jumps
+local DEFAULT, SPRINT, JUMP, DODGE, DODGE_AIR = 0, 2, 5, 7, 8 -- locomotion values; JUMP: all jumps
 
 ---@class WallHit
 ---@field dist number
@@ -67,6 +89,11 @@ local JUMP = 5 -- locomotion state value the game writes for all jumps
 ---@field last_exit string why the last wall run ended
 ---@field walls table<string, WallHit> hits by ray: left, right, left_high, right_high
 ---@field roll number camera roll in degrees, positive = right side down
+---@field momentum boolean momentum on
+---@field carry number m/s, V's speed cap as the mod sets it on the ground
+---@field impact number m/s lost in the last impact
+---@field input number[] stick: right, forward (-1..1)
+---@field sprint_button boolean sprint (or toggle sprint) button down
 
 local Parkour = {
     ---@type ParkourState
@@ -78,6 +105,11 @@ local Parkour = {
         last_exit = "",
         walls = {},
         roll = 0,
+        momentum = true,
+        carry = 0,
+        impact = 0,
+        input = { 0, 0 },
+        sprint_button = false,
     },
 }
 local cooldown = 0
@@ -85,6 +117,14 @@ local missing = 0 -- s the wall has been missing during the run
 local step_timer = 0
 ---@type number[]? velocity along the wall (x, y) and upward speed in the previous frame
 local last = nil
+local airborne = false
+local air_vz = 0 -- m/s, V's vertical speed in the last airborne frame
+local last_speed = 0 -- m/s, V's horizontal speed in the previous frame
+local settle = 0 -- s left before speed drops count as impacts
+local after_dash = false -- a dash happened since V was last on the ground jogging or sprinting
+---@type gameStatModifierData[]
+local modifiers = {} -- the mod's stat modifiers on V
+local applied = { cap = 0, accel = 0 } -- what they add to MaxSpeed and Acceleration
 
 ---@param x number
 ---@param y number
@@ -285,6 +325,111 @@ local function run(player, v, delta)
     end
 end
 
+-- Is the stick pointing roughly along V's horizontal movement (dx, dy)?
+---@param player PlayerPuppet
+---@param dx number
+---@param dy number
+---@return boolean
+local function input_along(player, dx, dy)
+    local x, y = Parkour.state.input[1], Parkour.state.input[2]
+    if math.sqrt(x * x + y * y) < MOMENTUM.min_input then
+        return false
+    end
+    local f = player:GetWorldForward()
+    local wx, wy = x * f.y + y * f.x, -x * f.x + y * f.y -- right = (f.y, -f.x)
+    local w = math.sqrt(wx * wx + wy * wy)
+    return w > 1e-3 and (wx * dx + wy * dy) / w >= math.cos(math.rad(MOMENTUM.max_input_angle))
+end
+
+-- Replace the mod's additive MaxSpeed and Acceleration modifiers on V (if they changed).
+---@param player PlayerPuppet
+---@param cap number
+---@param accel number
+local function set_stats(player, cap, accel)
+    if math.abs(cap - applied.cap) < 0.05 and math.abs(accel - applied.accel) < 0.05 then
+        return
+    end
+    local stats = Game.GetStatsSystem()
+    local id = player:GetEntityID()
+    for _, modifier in ipairs(modifiers) do
+        stats:RemoveModifier(id, modifier)
+    end
+    modifiers = {}
+    for _, add in ipairs({
+        { gamedataStatType.MaxSpeed, cap },
+        { gamedataStatType.Acceleration, accel },
+    }) do
+        if add[2] ~= 0 then
+            local modifier =
+                RPGManager.CreateStatModifier(add[1], gameStatModifierType.Additive, add[2])
+            stats:AddModifier(id, modifier)
+            modifiers[#modifiers + 1] = modifier
+        end
+    end
+    applied.cap, applied.accel = cap, accel
+end
+
+-- Momentum: in the air and in other moves (dash, slide, vault, wall run) the game's own stats
+-- apply and the carried speed is V's. On the ground (jog or sprint) the carried speed becomes
+-- her cap: it builds toward the game's cap, and fades slowly when above it.
+---@param player PlayerPuppet
+---@param v Vector4
+---@param delta number
+local function momentum(player, v, delta)
+    local s = Parkour.state
+    local speed = math.sqrt(v.x * v.x + v.y * v.y)
+    local dropped = last_speed - speed
+    last_speed = speed
+    local loco = locomotion(player)
+    local grounded = on_ground(player)
+    if
+        not s.momentum
+        or s.mode ~= "none"
+        or (loco ~= DEFAULT and loco ~= SPRINT)
+        or not grounded
+    then
+        s.carry, settle = speed, MOMENTUM.settle_time
+        after_dash = after_dash or loco == DODGE or loco == DODGE_AIR
+        set_stats(player, 0, 0)
+        airborne = not grounded
+        if airborne then
+            air_vz = v.z
+        end
+        return
+    end
+    settle = math.max(0, settle - delta)
+    local carry = s.carry
+    if airborne then
+        airborne = false
+        carry = air_vz < MOMENTUM.hard_landing_vz and speed or carry - MOMENTUM.landing_loss
+    end
+    if settle == 0 and dropped > MOMENTUM.impact_drop then
+        s.impact = dropped -- ran into something
+    end
+    carry = math.min(carry, speed + MOMENTUM.lead)
+    local stats = Game.GetStatsSystem()
+    local id = player:GetEntityID()
+    local base = stats:GetStatValue(id, gamedataStatType.MaxSpeed) - applied.cap
+    if after_dash then
+        after_dash = false
+        if carry > base then
+            carry = base + (carry - base) * MOMENTUM.dash_keep
+        end
+    end
+    if base > carry then
+        -- getting into it: free up to free_speed, then a smooth approach
+        local from = math.min(base, math.max(carry, MOMENTUM.free_speed))
+        carry = from + (base - from) * (1 - math.exp(-delta / MOMENTUM.build_time))
+    elseif speed > 0.5 and input_along(player, v.x / speed, v.y / speed) then
+        carry = math.max(base, carry - MOMENTUM.keep_decel * delta)
+    else
+        carry = base
+    end
+    s.carry = carry
+    local accel = stats:GetStatValue(id, gamedataStatType.Acceleration) - applied.accel
+    set_stats(player, carry - base, math.min(0, MOMENTUM.turn_accel - accel))
+end
+
 ---@param player PlayerPuppet
 ---@param delta number
 local function update_camera(player, delta)
@@ -330,6 +475,68 @@ registerHotkey("parkour_wallrun_toggle", "parkour: wall run on/off", function()
     pcall(notify, text)
 end)
 
+registerHotkey("parkour_momentum_toggle", "parkour: momentum on/off", function()
+    local s = Parkour.state
+    s.momentum = not s.momentum
+    local text = "parkour: momentum " .. (s.momentum and "on" or "off")
+    print(text)
+    pcall(notify, text)
+end)
+
+-- Movement input, controller and keyboard: the stick sends MoveX / MoveY axis values (WASD
+-- too, but not reliably, so the keys are also tracked as buttons, like Wall Hang does).
+local stick = { 0, 0 }
+---@type table<string, boolean>
+local keys = { Forward = false, Back = false, Left = false, Right = false }
+
+local function update_input()
+    local x = (keys.Right and 1 or 0) - (keys.Left and 1 or 0)
+    local y = (keys.Forward and 1 or 0) - (keys.Back and 1 or 0)
+    if x == 0 and y == 0 then
+        x, y = stick[1], stick[2]
+    end
+    Parkour.state.input = { x, y }
+end
+
+registerForEvent("onShutdown", function()
+    local player = Game.GetPlayer()
+    if player then
+        set_stats(player, 0, 0)
+    end
+end)
+
+registerForEvent("onInit", function()
+    Observe("PlayerPuppet", "OnAction", function(_, action)
+        ---@cast action ListenerAction
+        local name = Game.NameToString(action:GetName())
+        if name == "MoveX" then
+            stick[1] = tonumber(action:GetValue()) or 0
+        elseif name == "MoveY" then
+            stick[2] = tonumber(action:GetValue()) or 0
+        elseif name == "Sprint" or name == "ToggleSprint" then
+            Parkour.state.sprint_button = (tonumber(action:GetValue()) or 0) > 0
+            return
+        elseif keys[name] ~= nil then
+            local kind = action:GetType()
+            if kind == gameinputActionType.BUTTON_PRESSED then
+                keys[name] = true
+            elseif kind == gameinputActionType.BUTTON_RELEASED then
+                keys[name] = false
+            end
+        else
+            return
+        end
+        update_input()
+    end)
+    Observe("PlayerPuppet", "OnGameAttached", function(self)
+        self:RegisterInputListener(self)
+    end)
+    local player = Game.GetPlayer()
+    if player then
+        player:RegisterInputListener(player) -- after "Reload all mods" in a running game
+    end
+end)
+
 ---@param delta number
 registerForEvent("onUpdate", function(delta)
     local player = Game.GetPlayer()
@@ -356,6 +563,7 @@ registerForEvent("onUpdate", function(delta)
         elseif s.enabled and cooldown == 0 then
             try_start(player, v)
         end
+        momentum(player, v, delta)
     end
     update_camera(player, delta)
 end)

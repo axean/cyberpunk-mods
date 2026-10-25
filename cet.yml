@@ -39,3 +39,16 @@ globals:
     any: true
   SoundPlayEvent:
     any: true
+  gamedataStatType:
+    any: true
+  Observe:
+    args:
+      - type: string
+      - type: string
+      - type: function
+  gameinputActionType:
+    any: true
+  gameStatModifierType:
+    any: true
+  RPGManager:
+    any: true
