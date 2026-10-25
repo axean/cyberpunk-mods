@@ -10,6 +10,7 @@ Tools, notes and mods for game modding, by game. Main project: Cyberpunk 2077 mo
 
 - [`tools/`](tools/README.md): our scripts, for both games
 - [`REFERENCES.md`](REFERENCES.md): external repos and pages worth knowing
+- [`datasets/`](datasets/README.md): our movement measurements, and a [Mirror's Edge vs Cyberpunk comparison](datasets/comparison.md)
 
 ## Cyberpunk 2077
 
@@ -33,6 +34,7 @@ Tools, notes and mods for game modding, by game. Main project: Cyberpunk 2077 mo
   - [`dev-status`](mods/dev-status/README.md): texts which dev mods are loaded
   - [`hello-night-city-billboards`](mods/hello-night-city-billboards/README.md): billboard text
   - [`dev-log`](mods/dev-log/README.md): live movement and camera log (CET)
+- [`datasets/cyberpunk/`](datasets/cyberpunk/README.md): our movement captures
 
 ### Game setup
 
