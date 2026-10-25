@@ -17,6 +17,7 @@ FILES=(engine/config/base/scripts.ini engine/tools/scc.exe engine/tools/scc_lib.
 
 if [[ ${1:-} == --uninstall ]]; then
     for f in "${FILES[@]}"; do rm -f "$GAME/$f"; done
+    "$(dirname "$0")/thirdparty.sh" unannounce redscript
     echo "removed redscript; compiled mods in r6/cache stay until Steam verifies the game files"
     exit 0
 fi
@@ -27,3 +28,4 @@ curl -fsSL -o "$tmp/$ZIP" "https://github.com/jac3km4/redscript/releases/downloa
 echo "$SHA256  $tmp/$ZIP" | sha256sum -c --quiet
 unzip -q -o "$tmp/$ZIP" "${FILES[@]}" -d "$GAME"
 echo "installed redscript $VERSION into $GAME"
+"$(dirname "$0")/thirdparty.sh" announce redscript "redscript $VERSION (compiler) installed"
