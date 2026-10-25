@@ -38,6 +38,16 @@ function CameraSystem:GetActiveCameraForward() end
 function CameraSystem:GetActiveCameraRight() end
 ---@return number
 function CameraSystem:GetActiveCameraFOV() end
+-- Out parameter in the game: depending on CET's handling it returns the transform or fills one.
+---@param transform? Transform
+---@return any, any
+function CameraSystem:GetActiveCameraWorldTransform(transform) end
+
+---@class Transform
+---@field position Vector4
+Transform = {}
+---@return Transform
+function Transform.new() end
 
 ---@class BlackboardID_Int
 

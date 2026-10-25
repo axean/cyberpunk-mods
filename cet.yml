@@ -16,3 +16,5 @@ globals:
       - type: string
       - type: string
       - type: function
+  Transform:
+    any: true

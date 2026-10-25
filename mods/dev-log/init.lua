@@ -64,8 +64,26 @@ local function vec3(v)
     return string.format("[%.3f,%.3f,%.3f]", v.x, v.y, v.z)
 end
 
--- Camera as JSON fields: offset of the first-person camera from V (local), view yaw/pitch/roll
--- in degrees from the active camera's forward and right vectors, and FOV.
+-- The active camera's world transform. It's an out parameter in the game's API; CET may return
+-- it or fill a passed Transform, so both are tried.
+---@param cameras CameraSystem
+---@return Transform?
+local function camera_transform(cameras)
+    local ok, first, second = pcall(cameras.GetActiveCameraWorldTransform, cameras)
+    if ok and type(second) == "userdata" then
+        return second
+    elseif ok and type(first) == "userdata" then
+        return first
+    end
+    local transform = Transform.new()
+    if pcall(cameras.GetActiveCameraWorldTransform, cameras, transform) then
+        return transform
+    end
+    return nil
+end
+
+-- Camera as JSON fields: camera position minus V's position, view pitch/yaw/roll in degrees
+-- from the active camera's forward and right vectors, and FOV (as the game reports it).
 ---@param player PlayerPuppet
 ---@return string
 local function camera_json(player)
@@ -74,9 +92,15 @@ local function camera_json(player)
     local yaw = math.deg(math.atan2(fwd.y, fwd.x))
     local pitch = math.deg(math.asin(math.max(-1, math.min(1, fwd.z))))
     local roll = math.deg(math.asin(math.max(-1, math.min(1, -right.z))))
+    local offset = "null"
+    local transform = camera_transform(cameras)
+    if transform then
+        local cam, pos = transform.position, player:GetWorldPosition()
+        offset = string.format("[%.3f,%.3f,%.3f]", cam.x - pos.x, cam.y - pos.y, cam.z - pos.z)
+    end
     return string.format(
-        '"cam_local":%s,"cam_rot":[%.2f,%.2f,%.2f],"fov":%.2f',
-        vec3(player:GetFPPCameraComponent():GetLocalPosition()),
+        '"cam_off":%s,"cam_rot":[%.2f,%.2f,%.2f],"fov":%.2f',
+        offset,
         pitch,
         yaw,
         roll,
