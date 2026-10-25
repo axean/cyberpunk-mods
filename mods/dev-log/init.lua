@@ -116,7 +116,10 @@ end
 -- What dev-log reads from the parkour mod (its Parkour.state).
 ---@class ParkourStateView
 ---@field walls table<string, ParkourWallView>?
----@field hover boolean?
+---@field mode string?
+---@field side integer?
+---@field time number?
+---@field last_exit string?
 ---@field roll number?
 
 -- The parkour mod's state, if it's installed: ',"parkour":{...}' or "".
@@ -139,9 +142,12 @@ local function parkour_json()
         end
     end
     return string.format(
-        ',"parkour":{"hover":%s,"roll":%.2f,"walls":{%s}}',
-        tostring(state.hover == true),
-        tonumber(state.roll) or 0,
+        ',"parkour":{"mode":"%s","side":%d,"time":%.3f,"last_exit":"%s","roll":%.2f,"walls":{%s}}',
+        state.mode or "",
+        state.side or 0,
+        state.time or 0,
+        state.last_exit or "",
+        state.roll or 0,
         table.concat(walls, ",")
     )
 end
@@ -188,13 +194,24 @@ local function line(player)
     )
 end
 
+-- On-screen message in the game (the HUD's notification line), for hotkey feedback.
+---@param text string
+local function notify(text)
+    local message = SimpleScreenMessage.new()
+    message.message, message.duration, message.isShown = text, 2, true
+    local defs = GetAllBlackboardDefs().UI_Notifications
+    Game.GetBlackboardSystem():Get(defs):SetVariant(defs.OnscreenMessage, ToVariant(message), true)
+end
+
 registerForEvent("onInit", function()
     file = io.open("dev_log.jsonl", "w")
 end)
 
 registerHotkey("dev_log_per_frame", "dev-log: per-frame on/off", function()
     per_frame = not per_frame
-    print("dev-log: per-frame " .. (per_frame and "on" or "off"))
+    local text = "dev-log: per-frame " .. (per_frame and "on" or "off")
+    print(text)
+    pcall(notify, text)
 end)
 
 registerHotkey("dev_log_mark", "dev-log: mark", function()
@@ -204,6 +221,7 @@ registerHotkey("dev_log_mark", "dev-log: mark", function()
         file:flush()
     end
     print("dev-log: mark " .. marks)
+    pcall(notify, "dev-log: mark " .. marks)
 end)
 
 ---@param delta number

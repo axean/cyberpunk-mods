@@ -32,3 +32,10 @@ globals:
     any: true
   PSMImpulse:
     any: true
+  ToVariant:
+    args:
+      - type: any
+  SimpleScreenMessage:
+    any: true
+  SoundPlayEvent:
+    any: true

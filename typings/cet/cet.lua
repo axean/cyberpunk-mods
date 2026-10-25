@@ -28,6 +28,12 @@ Quaternion = {}
 ---@return Quaternion
 function Quaternion.new(i, j, k, r) end
 
+---@class SoundPlayEvent
+---@field soundName string
+SoundPlayEvent = {}
+---@return SoundPlayEvent
+function SoundPlayEvent.new() end
+
 ---@class PSMImpulse
 ---@field id string
 ---@field impulse Vector4
@@ -59,7 +65,7 @@ function PlayerPuppet:GetWorldPosition() end
 function PlayerPuppet:GetVelocity() end
 ---@return Vector4
 function PlayerPuppet:GetWorldForward() end
----@param event PSMImpulse
+---@param event PSMImpulse | SoundPlayEvent
 function PlayerPuppet:QueueEvent(event) end
 ---@return number
 function PlayerPuppet:GetWorldYaw() end
@@ -105,13 +111,37 @@ local IBlackboard = {}
 ---@param id BlackboardID_Int
 ---@return integer
 function IBlackboard:GetInt(id) end
+---@param id BlackboardID_Variant
+---@param value Variant
+---@param force boolean
+function IBlackboard:SetVariant(id, value, force) end
 
 ---@class PlayerStateMachineDef
 ---@field Locomotion BlackboardID_Int
 ---@field HighLevel BlackboardID_Int
 
+---@class BlackboardID_Variant
+
+---@class UINotificationsDef
+---@field OnscreenMessage BlackboardID_Variant
+
 ---@class AllBlackboardDefinitions
 ---@field PlayerStateMachine PlayerStateMachineDef
+---@field UI_Notifications UINotificationsDef
+
+---@class Variant
+
+---@param value any
+---@return Variant
+function ToVariant(value) end
+
+---@class SimpleScreenMessage
+---@field isShown boolean
+---@field duration number
+---@field message string
+SimpleScreenMessage = {}
+---@return SimpleScreenMessage
+function SimpleScreenMessage.new() end
 
 ---@class BlackboardSystem
 local BlackboardSystem = {}
@@ -119,6 +149,9 @@ local BlackboardSystem = {}
 ---@param definition PlayerStateMachineDef
 ---@return IBlackboard
 function BlackboardSystem:GetLocalInstanced(entity, definition) end
+---@param definition UINotificationsDef
+---@return IBlackboard
+function BlackboardSystem:Get(definition) end
 
 ---@class Game
 Game = {}
