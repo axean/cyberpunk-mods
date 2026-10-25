@@ -28,6 +28,7 @@ Scripts for studying and building mods. External tools (WolvenKit, Graphviz, RED
 | `gamefiles.py` | Read a vanilla resource from the player's game as WolvenKit JSON (build time only, never committed) |
 | `thirdparty.sh` | Install other authors' mods without a mod manager; never overwrites game files ([`thirdparty/`](../thirdparty/README.md)) |
 | `install-lua-tools.sh` | Installs the pinned Lua checkers (selene, lua-language-server); wrappers `selene`, `luals` |
+| `me_capture.py` | Capture Faith's movement from a running Mirror's Edge (2008) as JSONL, reference for parkour (output in git-ignored `captures/`) |
 | `build-mod.sh` | Build `mods/<mod>` (its `build.py`) into a mod.io zip under `build/`, and sideload it into the game |
 
 ## Usage
