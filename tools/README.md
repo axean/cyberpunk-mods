@@ -26,6 +26,7 @@ Scripts for studying and building mods. External tools (WolvenKit, Graphviz, RED
 | `devstatus.py` | Register a mod with dev-status (one phone text per loaded dev mod) |
 | `redscript-check.sh` | Compile redscript sources offline (redscript-cli under Proton's Wine) and report errors |
 | `gamefiles.py` | Read a vanilla resource from the player's game as WolvenKit JSON (build time only, never committed) |
+| `thirdparty.sh` | Install other authors' mods without a mod manager; never overwrites game files ([`thirdparty/`](../thirdparty/README.md)) |
 | `build-mod.sh` | Build `mods/<mod>` (its `build.py`) into a mod.io zip under `build/`, and sideload it into the game |
 
 ## Usage

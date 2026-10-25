@@ -4,3 +4,5 @@ dissected/
 .venv/
 __pycache__/
 build/
+thirdparty/*
+!thirdparty/README.md

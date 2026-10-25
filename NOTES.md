@@ -8,7 +8,7 @@ Target PC for now, but keep mods as platform agnostic as possible:
 
 - Prefer data (tweaks, archives, quest graphs, scenes) over scripts. Data mods are the likeliest to work on consoles.
 - Use redscript only where data can't do the job, and make the mod degrade gracefully if the script never runs.
-- No CET or RED4ext (native code, PC only).
+- No CET or RED4ext in published mods (native code, PC only). CET is fine as a development tool (see [`thirdparty/`](thirdparty/README.md)).
 
 We have no console to test on. Console support for redscript is unconfirmed: mod.io gets a per-platform copy of each upload, but whether consoles run the scripts is unknown.
 
