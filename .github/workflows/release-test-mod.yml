@@ -1,0 +1,45 @@
+# Build test-mod-hello-world-dqc-33 into a zip for manual upload on mod.io.
+# Tags test-mod-hello-world-v<version> attach the zip to a GitHub Release; "Run workflow"
+# builds without a tag and keeps the zip as a run artifact.
+# The mod.io API cannot target Cyberpunk's (locked) platforms, so the upload is manual.
+name: release test mod
+
+on:
+  push:
+    tags: ["test-mod-hello-world-v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Install WolvenKit
+        run: tools/install-wolvenkit.sh
+
+      - name: Build
+        run: |
+          tools/build-mod.sh mods/test-mod-hello-world-dqc-33
+          version="${GITHUB_REF_NAME#test-mod-hello-world-v}"
+          [[ $GITHUB_REF_TYPE == tag ]] || version="dev-${GITHUB_SHA::7}"
+          zip="test-mod-hello-world-dqc-33-$version.zip"
+          cp build/test-mod-hello-world-dqc-33/test-mod-hello-world-dqc-33.zip "$zip"
+          echo "ZIP=$zip" >> "$GITHUB_ENV"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ZIP }}
+          path: ${{ env.ZIP }}
+
+      - name: Release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "$ZIP" --title "$GITHUB_REF_NAME" --notes \
+            "Upload \`$ZIP\` on the mod's mod.io page (file manager) and tick Windows. Unofficial fan work, not approved/endorsed by CD PROJEKT RED."
