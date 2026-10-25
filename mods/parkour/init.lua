@@ -1,7 +1,7 @@
 -- parkour (CET): Mirror's Edge style movement. For now, three spikes for the wall run:
---   hover  (hold): cancel V's vertical speed every frame with impulses
+--   hover  (hold): cancel gravity every frame with impulses, damp the remaining vertical speed
 --   walls  (always): raycasts left and right of V, results in Parkour.state.walls (dev-log logs them)
---   roll   (hold): roll the view toward ROLL_MAX and lift it, back to level on release
+--   roll   (hold, left or right): roll the view toward ROLL_MAX and lift it, level on release
 
 local RAY_GROUPS = { "Static", "Terrain", "PlayerBlocker", "Vehicle" }
 local RAY_LENGTH = 1.5 -- m, sideways from V's centre line
@@ -9,6 +9,10 @@ local CHEST, HIGH = 1.2, 2.0 -- m above the feet: wall check, wall height check
 local ROLL_MAX, ROLL_IN, ROLL_OUT = 20, 30, 100 -- degrees, degrees per second in and out
 local EYE_LIFT = 0.1 -- m while rolling
 local MAX_PLAUSIBLE_SPEED = 100 -- m/s; GetVelocity() sometimes returns nonsense
+local GRAVITY = 16 -- m/s², the game's defaultGravity
+-- Share of the vertical speed removed per second. A full correction each frame overshoots: the
+-- impulse only applies a frame later, while the next reading still shows the old speed.
+local HOVER_DAMPING = 6
 
 ---@class WallHit
 ---@field dist number
@@ -17,13 +21,13 @@ local MAX_PLAUSIBLE_SPEED = 100 -- m/s; GetVelocity() sometimes returns nonsense
 ---@class ParkourState
 ---@field walls table<string, WallHit> hits by ray: left, right, left_high, right_high
 ---@field hover boolean
----@field roll number
+---@field roll number degrees, positive = right
 
 local Parkour = {
     ---@type ParkourState
     state = { walls = {}, hover = false, roll = 0 },
 }
-local roll_held = false
+local roll_held = 0 -- -1 left, 1 right, 0 none
 
 ---@param x number
 ---@param y number
@@ -88,19 +92,22 @@ local function impulse(player, dz)
 end
 
 ---@param player PlayerPuppet
-local function hover(player)
-    local vel = player:GetVelocity()
-    if math.abs(vel.z) <= MAX_PLAUSIBLE_SPEED and math.abs(vel.z) > 0.01 then
-        impulse(player, -vel.z)
+---@param delta number
+local function hover(player, delta)
+    local vz = player:GetVelocity().z
+    if math.abs(vz) > MAX_PLAUSIBLE_SPEED then
+        vz = 0
     end
+    local damping = 1 - math.exp(-HOVER_DAMPING * delta)
+    impulse(player, GRAVITY * delta - damping * vz)
 end
 
 ---@param player PlayerPuppet
 ---@param delta number
 local function update_roll(player, delta)
     local s = Parkour.state
-    local target = roll_held and ROLL_MAX or 0
-    local rate = roll_held and ROLL_IN or ROLL_OUT
+    local target = roll_held * ROLL_MAX
+    local rate = roll_held ~= 0 and ROLL_IN or ROLL_OUT
     local before = s.roll
     if s.roll < target then
         s.roll = math.min(target, s.roll + rate * delta)
@@ -114,15 +121,19 @@ local function update_roll(player, delta)
     local half = math.rad(s.roll) / 2
     local camera = player:GetFPPCameraComponent()
     camera:SetLocalOrientation(Quaternion.new(0, math.sin(half), 0, math.cos(half)))
-    camera:SetLocalPosition(Vector4.new(0, 0, EYE_LIFT * s.roll / ROLL_MAX, 0))
+    camera:SetLocalPosition(Vector4.new(0, 0, EYE_LIFT * math.abs(s.roll) / ROLL_MAX, 0))
 end
 
 registerInput("parkour_spike_hover", "parkour spike: hover (hold)", function(down)
     Parkour.state.hover = down
 end)
 
-registerInput("parkour_spike_roll", "parkour spike: roll camera (hold)", function(down)
-    roll_held = down
+registerInput("parkour_spike_roll", "parkour spike: roll camera right (hold)", function(down)
+    roll_held = down and 1 or 0
+end)
+
+registerInput("parkour_spike_roll_left", "parkour spike: roll camera left (hold)", function(down)
+    roll_held = down and -1 or 0
 end)
 
 ---@param delta number
@@ -133,7 +144,7 @@ registerForEvent("onUpdate", function(delta)
     end
     scan_walls(player)
     if Parkour.state.hover then
-        hover(player)
+        hover(player, delta)
     end
     update_roll(player, delta)
 end)
