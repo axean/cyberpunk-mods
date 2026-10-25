@@ -35,7 +35,9 @@ External resources we found useful, with what each is good for. Links only; noth
 | Link | Useful for |
 |---|---|
 | [Deceptious Quest Core (mod.io)](https://mod.io/g/cyberpunk-2077/m/deceptious-quest-core2) | DQC: quest framework our test mod plugs into |
-| [Wall Hang (Nexus 2950)](https://www.nexusmods.com/cyberpunk2077/mods/2950) | CET mod: hang on and jump off walls; reference for wall detection |
+| [Wall Hang (Nexus 2950)](https://www.nexusmods.com/cyberpunk2077/mods/2950) | CET mod: hang on and jump off walls; reference for wall detection. Source: [charlierix/CyberpunkMods](https://github.com/charlierix/CyberpunkMods) (no license stated; also jetpack and low-flying mods) |
+| [Frosthaven/mod-2077-overclocked-lynx-paws](https://github.com/Frosthaven/mod-2077-overclocked-lynx-paws) (MIT) | CET mod: wall running, climbing, wall jumps, timed safe-landing rolls for Lynx Paws. Shows `SoundPlayEvent` for sounds and the game's leftover `lcm_wallrun_in` / `lcm_wallrun_out` events |
+| [Walljumping Lynx Paws (Nexus 12198)](https://www.nexusmods.com/cyberpunk2077/mods/12198) | CET wall jump mod; its scripts are in [rfuzzo/cyberpunk-nexus-script-dump](https://github.com/rfuzzo/cyberpunk-nexus-script-dump) (Unlicense), a dump of Nexus mods' script files, useful for finding API usage |
 | [WallRun mod (PCGamesN article, 2021)](https://www.pcgamesn.com/cyberpunk-2077/mod-wall-run) | Earlier wall run (CET + GravityTweaker); CDPR cut wall running after E3 2018 ([TweakTown](https://www.tweaktown.com/news/73559/cyberpunk-2077-wall-running-parkour-nuked-from-final-game/index.html)) |
 
 ## Mirror's Edge (2008): parkour reference

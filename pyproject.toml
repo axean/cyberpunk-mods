@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Game modding tools and notes: Cyberpunk 2077 mods, Mirror's Edge as parkour reference."
 readme = "README.md"
 authors = [{ name = "Axel E. Andersson" }]
+license = "MIT"
 requires-python = ">=3.12"
 dependencies = ["lz4>=4.4"]
 

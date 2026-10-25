@@ -1,5 +1,6 @@
 # modding-tools
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Checked with pyright](https://microsoft.github.io/pyright/img/pyright_badge.svg)](https://microsoft.github.io/pyright/)
@@ -87,3 +88,7 @@ uv run pre-commit install
 ```
 
 Checks run on every commit: ruff and strict pyright for Python, shellcheck for shell, StyLua, selene (strict) and lua-language-server (strict, CET types in `typings/cet/`) for Lua.
+
+## License
+
+[MIT](LICENSE): our code, docs and datasets. Game names and trademarks belong to their owners; see the disclaimers above.
