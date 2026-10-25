@@ -81,6 +81,7 @@ Decoded by `tools/savdat.py`, checked against the facts listed in `metadata.9.js
 - A mod's journal can add a conversation under a vanilla contact by using a folder with the contact's path as id (e.g. `contacts/unknown`); entries merge by id.
 - mod.io API: write calls on `api.mod.io` fail with 401 "deprecated api.mod.io domain"; use the per-game domain `https://g-5784.modapi.io/v1`. Uploads need a personal access token with write scope (OAuth clients are deprecated); the read-only API key cannot upload.
 - On mod.io, Cyberpunk's platforms (Windows, Mac, Xbox Series X/S, PS5, Switch 2) are all moderated and locked: authors upload files without platforms, and CDPR's team assigns them on approval. Until then a file is pending. For testing, use the local `archive/pc/mod/` route.
+- Console versions come from mod.io's Cloud Cooking: the uploaded PC build is cooked for Xbox, PlayStation and Switch after upload (at most 50 files cooking at a time per author). The file is then set live per platform from the website ("Set file live"), pending CDPR approval. Which platforms a data-only mod ends up with is not yet known.
 - mod.io tags some mods "Available on Consoles". Mods that ship scripts seem not to carry it; not confirmed.
 
 ## Existing frameworks
